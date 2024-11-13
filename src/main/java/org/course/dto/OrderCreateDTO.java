@@ -22,6 +22,5 @@ import java.util.List;
 public record OrderCreateDTO(
         @NotNull @NotEmpty long userId,
         @NotEmpty List<Long> dishIds,
-        double fullprice,
         @NotNull @NotEmpty @NotBlank String addition) implements Serializable {
 }

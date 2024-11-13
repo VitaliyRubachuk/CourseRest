@@ -1,5 +1,6 @@
 package org.course.mapper;
 
+import org.course.entity.Dishes;
 import org.course.entity.Order;
 import org.course.dto.OrderDto;
 import org.course.dto.OrderCreateDTO;
@@ -14,6 +15,8 @@ public interface OrderMapper {
 
     Order toEntity(OrderDto orderDto);
 
+    @Mapping(target = "dishIds", source = "dishes", qualifiedByName = "mapDishesToDishIds")
+    @Mapping(target = "userId", source = "user.id")
     OrderDto toDto(Order order);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -21,7 +24,12 @@ public interface OrderMapper {
 
     Order toEntity(OrderCreateDTO orderCreateDTO);
 
-    // Метод для конвертації списку у рядок
+    @Named("mapDishesToDishIds")
+    static List<Long> mapDishesToDishIds(List<Dishes> dishes) {
+        return dishes == null ? List.of() : dishes.stream().map(Dishes::getId).collect(Collectors.toList());
+    }
+
+    // Конвертація списку у рядок
     default String mapDishIdsListToString(List<Long> dishIds) {
         if (dishIds == null || dishIds.isEmpty()) {
             return "";
@@ -31,7 +39,7 @@ public interface OrderMapper {
                 .collect(Collectors.joining(","));
     }
 
-    // Метод для конвертації рядка у список
+    // Конвертація рядка у список
     default List<Long> mapDishIdsStringToList(String dishIdsString) {
         if (dishIdsString == null || dishIdsString.isEmpty()) {
             return List.of();

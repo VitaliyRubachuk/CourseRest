@@ -53,11 +53,7 @@ public class OrderService {
 
         List<Dishes> dishes = dishesRepository.findAllById(orderCreateDTO.dishIds());
 
-        Order order = new Order();
-        order.setUser(user);
-        order.setFullprice(orderCreateDTO.fullprice());
-        order.setAddition(orderCreateDTO.addition());
-
+        // Переконатися, що дублікати страв додаються
         List<Dishes> orderedDishes = orderCreateDTO.dishIds().stream()
                 .map(dishId -> dishes.stream()
                         .filter(dish -> dish.getId() == dishId)
@@ -65,44 +61,45 @@ public class OrderService {
                         .orElseThrow(() -> new RuntimeException("Dish not found")))
                 .collect(Collectors.toList());
 
-        order.setDishes(orderedDishes);
+        double totalPrice = orderedDishes.stream()
+                .mapToDouble(Dishes::getPrice)
+                .sum();
 
-        // Оновлення ID страв
+        Order order = new Order();
+        order.setUser(user);
+        order.setAddition(orderCreateDTO.addition());
+        order.setDishes(orderedDishes);  // Додаємо страви з дублями
+        order.setFullprice(totalPrice); // Оновлюємо повну ціну
         order.updateDishIdsString();
 
-        // Зберігаємо замовлення
         Order savedOrder = orderRepository.save(order);
+        orderRepository.flush();
         System.out.println("Saved Order: " + savedOrder);
 
-        // Створюємо новий OrderDto без поля dishIdsString
-        OrderDto orderDto = new OrderDto(
-                savedOrder.getId(),
-                savedOrder.getUser().getId(), // передаємо userId
-                savedOrder.getDishes().stream().map(Dishes::getId).collect(Collectors.toList()), // передаємо dishIds
-                savedOrder.getFullprice(),
-                savedOrder.getAddition()
-        );
-
-        return orderDto;
+        // Використовуємо маппер для створення OrderDto
+        return orderMapper.toDto(savedOrder);
     }
+
 
     public OrderDto updateOrder(long id, OrderCreateDTO orderCreateDTO) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        order.setFullprice(orderCreateDTO.fullprice());
         order.setAddition(orderCreateDTO.addition());
 
-        // Завантажуємо страви без перевірки на дублікати
         List<Dishes> dishes = dishesRepository.findAllById(orderCreateDTO.dishIds());
         order.setDishes(dishes);
-        order.updateDishIdsString();  // Оновлення рядка IDs страв
 
+        double updatedTotalPrice = dishes.stream()
+                .mapToDouble(Dishes::getPrice)
+                .sum();
+        order.setFullprice(updatedTotalPrice); // Оновлюємо повну ціну
+
+        order.updateDishIdsString();
         order = orderRepository.save(order);
+
         return orderMapper.toDto(order);
     }
-
-
 
     public void deleteOrder(long id) {
         orderRepository.deleteById(id);

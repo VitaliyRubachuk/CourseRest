@@ -35,10 +35,12 @@ public class DishesService {
     }
 
     public DishesDto createDishes(DishesCreateDTO dishesCreateDTO) {
+        System.out.println("Creating dish with details: " + dishesCreateDTO);
         Dishes dishes = dishesMapper.toEntity(dishesCreateDTO);
         Dishes savedDishes = dishesRepository.save(dishes);
         return dishesMapper.toDto(savedDishes);
     }
+
 
     public DishesDto updateDishes(long id, DishesDto dishesDto) {
         Dishes dishes = dishesRepository.findById(id)

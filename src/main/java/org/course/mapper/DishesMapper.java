@@ -15,8 +15,6 @@ public interface DishesMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_DEFAULT)
     Dishes partialUpdate(DishesDto dishesDto, @MappingTarget Dishes dishes);
 
-
-    @Mapping(source = "description", target = "description")
     Dishes toEntity(DishesCreateDTO dishesCreateDTO);
 }
 

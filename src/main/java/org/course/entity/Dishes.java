@@ -23,7 +23,7 @@ public class Dishes {
     private String name;
 
     @Column(name = "price")
-    private String price;
+    private double  price;
 
     @Column(name = "description")
     private String description;
