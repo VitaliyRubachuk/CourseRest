@@ -9,5 +9,4 @@ import java.io.Serializable;
 /**
  * DTO for {@link org.course.entity.User}
  */
-public record UserCreateDTO(@NotNull @NotEmpty @NotBlank String name) implements Serializable
-{ }
+public record UserCreateDTO(@NotNull @NotEmpty @NotBlank String name) implements Serializable { }

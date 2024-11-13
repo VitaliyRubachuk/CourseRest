@@ -6,8 +6,8 @@ import org.course.dto.UserCreateDTO;
 import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
-public interface UserMapper
-{
+public interface UserMapper {
+
     User toEntity(UserDto userDto);
 
     UserDto toDto(User user);
@@ -15,5 +15,5 @@ public interface UserMapper
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User partialUpdate(UserDto userDto, @MappingTarget User user);
 
-    User toEntity (UserCreateDTO userCreateDTO);
+    User toEntity(UserCreateDTO userCreateDTO);
 }
