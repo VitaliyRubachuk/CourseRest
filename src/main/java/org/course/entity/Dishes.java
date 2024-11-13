@@ -6,16 +6,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class Dishes
-{
+public class Dishes {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  long id;
+    private long id;
 
     @Column(name = "name")
     private String name;
@@ -23,6 +25,9 @@ public class Dishes
     @Column(name = "price")
     private String price;
 
-    @Column(name = "descriptoion")
-    private String descriptoion;
+    @Column(name = "description")
+    private String description;
+
+    @ManyToMany(mappedBy = "dishes")
+    private List<Order> orders;
 }
