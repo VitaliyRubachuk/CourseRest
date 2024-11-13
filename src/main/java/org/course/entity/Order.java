@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -36,4 +37,15 @@ public class Order {
 
     @Column(name = "addition")
     private String addition;
+
+    @Column(name = "dish_ids_string")
+    private String dishIdsString;
+
+    public void updateDishIdsString() {
+        if (dishes != null) {
+            this.dishIdsString = dishes.stream()
+                    .map(dish -> String.valueOf(dish.getId()))
+                    .collect(Collectors.joining(","));
+        }
+    }
 }
