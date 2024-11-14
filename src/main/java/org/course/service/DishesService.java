@@ -29,22 +29,40 @@ public class DishesService {
                 .toList();
     }
 
+    public List<DishesDto> getDishesByCategory(String category) {
+        return dishesRepository.findByCategory(category).stream()
+                .map(dishesMapper::toDto)
+                .toList();
+    }
+
+    public List<DishesDto> sortDishesByPrice(boolean ascending) {
+        List<Dishes> dishes = ascending ? dishesRepository.findAllByOrderByPriceAsc() : dishesRepository.findAllByOrderByPriceDesc();
+        return dishes.stream()
+                .map(dishesMapper::toDto)
+                .toList();
+    }
+
+    public List<DishesDto> sortDishesByName(boolean ascending) {
+        List<Dishes> dishes = ascending ? dishesRepository.findAllByOrderByNameAsc() : dishesRepository.findAllByOrderByNameDesc();
+        return dishes.stream()
+                .map(dishesMapper::toDto)
+                .toList();
+    }
+
     public Optional<DishesDto> getDishesById(long id) {
         return dishesRepository.findById(id)
                 .map(dishesMapper::toDto);
     }
 
     public DishesDto createDishes(DishesCreateDTO dishesCreateDTO) {
-        System.out.println("Creating dish with details: " + dishesCreateDTO);
         Dishes dishes = dishesMapper.toEntity(dishesCreateDTO);
         Dishes savedDishes = dishesRepository.save(dishes);
         return dishesMapper.toDto(savedDishes);
     }
 
-
     public DishesDto updateDishes(long id, DishesDto dishesDto) {
         Dishes dishes = dishesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Dishes not found"));
+                .orElseThrow(() -> new RuntimeException("Dish not found"));
         dishesMapper.partialUpdate(dishesDto, dishes);
         Dishes updatedDishes = dishesRepository.save(dishes);
         return dishesMapper.toDto(updatedDishes);

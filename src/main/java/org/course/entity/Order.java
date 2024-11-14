@@ -42,6 +42,10 @@ public class Order {
     @Column(name = "dish_ids_string")
     private String dishIdsString;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private OrderStatus status;
+
     public void updateDishIdsString() {
         if (dishes != null) {
             this.dishIdsString = dishes.stream()

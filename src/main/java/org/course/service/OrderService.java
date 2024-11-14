@@ -5,6 +5,7 @@ import org.course.dto.OrderDto;
 import org.course.entity.Dishes;
 import org.course.entity.Order;
 import org.course.entity.User;
+import org.course.entity.OrderStatus;
 import org.course.mapper.OrderMapper;
 import org.course.repository.DishesRepository;
 import org.course.repository.OrderRepository;
@@ -34,11 +35,18 @@ public class OrderService {
         this.dishesRepository = dishesRepository;
     }
 
-    public List<OrderDto> getAllOrders() {
-        return orderRepository.findAll().stream()
+    public List<OrderDto> getAllOrders(OrderStatus status) {
+        List<Order> orders;
+        if (status != null) {
+            orders = orderRepository.findByStatus(status);
+        } else {
+            orders = orderRepository.findAll();
+        }
+        return orders.stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
+
 
     public Optional<OrderDto> getOrderById(long id) {
         return orderRepository.findById(id)
@@ -46,7 +54,6 @@ public class OrderService {
     }
 
     public OrderDto createOrder(OrderCreateDTO orderCreateDTO) {
-        // Перевірка логування
         System.out.println("Received OrderCreateDTO: " + orderCreateDTO);
 
         User user = userRepository.findById(orderCreateDTO.userId())
@@ -72,6 +79,12 @@ public class OrderService {
         order.setDishes(orderedDishes);
         order.setFullprice(totalPrice);
         order.updateDishIdsString();
+
+        if (orderCreateDTO.status() != null) {
+            order.setStatus(OrderStatus.valueOf(orderCreateDTO.status()));
+        } else {
+            order.setStatus(OrderStatus.PENDING);
+        }
 
         Order savedOrder = orderRepository.save(order);
         orderRepository.flush();
@@ -107,14 +120,34 @@ public class OrderService {
 
         order.updateDishIdsString();
 
+        if (orderCreateDTO.status() != null) {
+            order.setStatus(OrderStatus.valueOf(orderCreateDTO.status()));
+        }
+
         order = orderRepository.save(order);
 
         return orderMapper.toDto(order);
     }
 
 
+    public OrderDto updateOrderStatus(long orderId, OrderStatus status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.setStatus(status);
+        Order updatedOrder = orderRepository.save(order);
+        return new OrderDto(
+                updatedOrder.getId(),
+                updatedOrder.getUser().getId(),
+                updatedOrder.getDishes().stream().map(Dishes::getId).collect(Collectors.toList()),
+                updatedOrder.getFullprice(),
+                updatedOrder.getAddition(),
+                updatedOrder.getStatus()
+        );
+    }
+
 
     public void deleteOrder(long id) {
         orderRepository.deleteById(id);
     }
+
 }

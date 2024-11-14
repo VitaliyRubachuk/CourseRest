@@ -2,6 +2,7 @@ package org.course.controller;
 
 import org.course.dto.OrderCreateDTO;
 import org.course.dto.OrderDto;
+import org.course.entity.OrderStatus;
 import org.course.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,11 +24,13 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderDto>> getAllOrders() {
-        List<OrderDto> orders = orderService.getAllOrders();
+    public ResponseEntity<List<OrderDto>> getAllOrders(
+            @RequestParam(required = false) OrderStatus status) {
+        List<OrderDto> orders = orderService.getAllOrders(status);
         System.out.println("Retrieved Orders: " + orders);
         return ResponseEntity.ok(orders);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderDto> getOrderById(@PathVariable long id) {
@@ -53,4 +56,12 @@ public class OrderController {
         orderService.deleteOrder(id);
         return ResponseEntity.noContent().build();
     }
-}
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<OrderDto> updateOrderStatus(@PathVariable long id, @RequestParam OrderStatus status) {
+        OrderDto updatedOrder = orderService.updateOrderStatus(id, status);
+        return ResponseEntity.ok(updatedOrder);
+    }
+
+    }
+

@@ -44,16 +44,9 @@ public class UserService {
 
 
     public UserDto updateUser(long id, UserDto userDto) {
-        // Знайдемо користувача за ID
         User existingUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Оновимо дані користувача, не змінюючи ID
         userMapper.partialUpdate(userDto, existingUser);
-
-        // Збережемо оновленого користувача
         User updatedUser = userRepository.save(existingUser);
-
-        // Повернемо DTO оновленого користувача
         return userMapper.toDto(updatedUser);
     }
 

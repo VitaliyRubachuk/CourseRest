@@ -4,12 +4,10 @@ import org.course.dto.DishesCreateDTO;
 import org.course.dto.DishesDto;
 import org.course.service.DishesService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/dishes")
@@ -28,18 +26,36 @@ public class DishesController {
         return ResponseEntity.ok(dishes);
     }
 
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<DishesDto>> getDishesByCategory(@PathVariable String category) {
+        List<DishesDto> dishes = dishesService.getDishesByCategory(category);
+        return ResponseEntity.ok(dishes);
+    }
+
+    //true / false - зростання / спадання
+    @GetMapping("/sort/price/{order}")
+    public ResponseEntity<List<DishesDto>> sortDishesByPrice(@PathVariable boolean order) {
+        List<DishesDto> dishes = dishesService.sortDishesByPrice(order);
+        return ResponseEntity.ok(dishes);
+    }
+
+    @GetMapping("/sort/name/{order}")
+    public ResponseEntity<List<DishesDto>> sortDishesByName(@PathVariable boolean order) {
+        List<DishesDto> dishes = dishesService.sortDishesByName(order);
+        return ResponseEntity.ok(dishes);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<DishesDto> getDishesById(@PathVariable long id) {
-        Optional<DishesDto> dishes = dishesService.getDishesById(id);
-        return dishes.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        return dishesService.getDishesById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<DishesDto> createDishes(@RequestBody DishesCreateDTO dishesCreateDTO) {
-        System.out.println("Received request to create Dishes: " + dishesCreateDTO);
         DishesDto createdDishes = dishesService.createDishes(dishesCreateDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdDishes);
+        return ResponseEntity.status(201).body(createdDishes);
     }
 
     @PutMapping("/{id}")

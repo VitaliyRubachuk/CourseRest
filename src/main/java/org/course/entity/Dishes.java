@@ -23,11 +23,18 @@ public class Dishes {
     private String name;
 
     @Column(name = "price")
-    private double  price;
+    private double price;
 
     @Column(name = "description")
     private String description;
 
+    @Column(name = "category")
+    private String category;
+
     @ManyToMany(mappedBy = "dishes")
     private List<Order> orders;
+
+    @OneToMany(mappedBy = "dish")
+    private List<Review> reviews;
+
 }

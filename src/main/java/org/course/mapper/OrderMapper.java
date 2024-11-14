@@ -13,11 +13,13 @@ import java.util.stream.Collectors;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface OrderMapper {
 
-    Order toEntity(OrderDto orderDto);
-
+    @Mapping(target = "fullPrice", source = "fullprice")
+    @Mapping(target = "status", source = "status")
     @Mapping(target = "dishIds", source = "dishes", qualifiedByName = "mapDishesToDishIds")
     @Mapping(target = "userId", source = "user.id")
     OrderDto toDto(Order order);
+
+    Order toEntity(OrderDto orderDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Order partialUpdate(OrderDto orderDto, @MappingTarget Order order);
