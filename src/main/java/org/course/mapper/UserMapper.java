@@ -13,6 +13,7 @@ public interface UserMapper {
     UserDto toDto(User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
     User partialUpdate(UserDto userDto, @MappingTarget User user);
 
     User toEntity(UserCreateDTO userCreateDTO);

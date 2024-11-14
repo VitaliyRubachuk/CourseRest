@@ -12,6 +12,7 @@ import org.course.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,7 +54,7 @@ public class OrderService {
 
         List<Dishes> dishes = dishesRepository.findAllById(orderCreateDTO.dishIds());
 
-        // Переконатися, що дублікати страв додаються
+
         List<Dishes> orderedDishes = orderCreateDTO.dishIds().stream()
                 .map(dishId -> dishes.stream()
                         .filter(dish -> dish.getId() == dishId)
@@ -68,15 +69,14 @@ public class OrderService {
         Order order = new Order();
         order.setUser(user);
         order.setAddition(orderCreateDTO.addition());
-        order.setDishes(orderedDishes);  // Додаємо страви з дублями
-        order.setFullprice(totalPrice); // Оновлюємо повну ціну
+        order.setDishes(orderedDishes);
+        order.setFullprice(totalPrice);
         order.updateDishIdsString();
 
         Order savedOrder = orderRepository.save(order);
         orderRepository.flush();
         System.out.println("Saved Order: " + savedOrder);
 
-        // Використовуємо маппер для створення OrderDto
         return orderMapper.toDto(savedOrder);
     }
 
@@ -88,18 +88,31 @@ public class OrderService {
         order.setAddition(orderCreateDTO.addition());
 
         List<Dishes> dishes = dishesRepository.findAllById(orderCreateDTO.dishIds());
-        order.setDishes(dishes);
 
-        double updatedTotalPrice = dishes.stream()
+        List<Dishes> updatedDishes = new ArrayList<>();
+        for (Long dishId : orderCreateDTO.dishIds()) {
+            Dishes dish = dishes.stream()
+                    .filter(d -> d.getId() == dishId)
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Dish not found"));
+            updatedDishes.add(dish);
+        }
+
+        order.setDishes(updatedDishes);
+
+        double updatedTotalPrice = updatedDishes.stream()
                 .mapToDouble(Dishes::getPrice)
                 .sum();
-        order.setFullprice(updatedTotalPrice); // Оновлюємо повну ціну
+        order.setFullprice(updatedTotalPrice);
 
         order.updateDishIdsString();
+
         order = orderRepository.save(order);
 
         return orderMapper.toDto(order);
     }
+
+
 
     public void deleteOrder(long id) {
         orderRepository.deleteById(id);

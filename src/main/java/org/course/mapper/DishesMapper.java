@@ -13,8 +13,11 @@ public interface DishesMapper {
     DishesDto toDto(Dishes dishes);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_DEFAULT)
+    @Mapping(target = "id", ignore = true)
     Dishes partialUpdate(DishesDto dishesDto, @MappingTarget Dishes dishes);
 
     Dishes toEntity(DishesCreateDTO dishesCreateDTO);
+
 }
 
+//При збоях в вставці/оновленні оновити мапер (ctrl + x - ctrl + v)

@@ -35,18 +35,28 @@ public class UserService {
     }
 
     public UserDto createUser(UserCreateDTO userCreateDTO) {
+        System.out.println("Creating user with name: " + userCreateDTO.name());
         User user = userMapper.toEntity(userCreateDTO);
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }
 
 
+
     public UserDto updateUser(long id, UserDto userDto) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        userMapper.partialUpdate(userDto, user);
-        User updatedUser = userRepository.save(user);
+        // Знайдемо користувача за ID
+        User existingUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Оновимо дані користувача, не змінюючи ID
+        userMapper.partialUpdate(userDto, existingUser);
+
+        // Збережемо оновленого користувача
+        User updatedUser = userRepository.save(existingUser);
+
+        // Повернемо DTO оновленого користувача
         return userMapper.toDto(updatedUser);
     }
+
 
     public void deleteUser(long id) {
         userRepository.deleteById(id);

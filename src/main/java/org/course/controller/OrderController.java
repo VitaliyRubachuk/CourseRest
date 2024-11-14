@@ -25,11 +25,7 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<List<OrderDto>> getAllOrders() {
         List<OrderDto> orders = orderService.getAllOrders();
-
-        // Логування для перевірки у Postman
         System.out.println("Retrieved Orders: " + orders);
-
-        // Повертатимемо список замовлень у Postman у звичному форматі
         return ResponseEntity.ok(orders);
     }
 
