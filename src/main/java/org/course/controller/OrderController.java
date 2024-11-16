@@ -1,5 +1,6 @@
 package org.course.controller;
 
+import jakarta.validation.Valid;
 import org.course.dto.OrderCreateDTO;
 import org.course.dto.OrderDto;
 import org.course.entity.OrderStatus;
@@ -40,19 +41,20 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@RequestBody OrderCreateDTO orderCreateDTO) {
+    public ResponseEntity<OrderDto> createOrder(@Valid @RequestBody OrderCreateDTO orderCreateDTO) {
         OrderDto createdOrder = orderService.createOrder(orderCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderDto> updateOrder(@PathVariable long id, @RequestBody OrderCreateDTO orderCreateDTO) {
+    public ResponseEntity<OrderDto> updateOrder(@PathVariable long id, @Valid @RequestBody OrderCreateDTO orderCreateDTO) {
         OrderDto updatedOrder = orderService.updateOrder(id, orderCreateDTO);
         return ResponseEntity.ok(updatedOrder);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable long id) {
+    public ResponseEntity<Void> deleteOrder(@PathVariable long id)
+    {
         orderService.deleteOrder(id);
         return ResponseEntity.noContent().build();
     }

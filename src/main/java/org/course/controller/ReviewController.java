@@ -1,5 +1,6 @@
 package org.course.controller;
 
+import jakarta.validation.Valid;
 import org.course.dto.ReviewCreateDTO;
 import org.course.dto.ReviewDto;
 import org.course.service.ReviewService;
@@ -36,7 +37,7 @@ public class ReviewController {
 
 
     @PostMapping
-    public ResponseEntity<ReviewDto> addReview(@RequestBody ReviewCreateDTO reviewCreateDTO) {
+    public ResponseEntity<ReviewDto> addReview(@Valid  @RequestBody ReviewCreateDTO reviewCreateDTO) {
         ReviewDto createdReview = reviewService.createReview(reviewCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReview);
     }

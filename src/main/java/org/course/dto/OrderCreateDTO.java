@@ -20,7 +20,8 @@ import java.util.List;
  * DTO for {@link org.course.entity.Order}
  */
 public record OrderCreateDTO(
-        @NotNull @NotEmpty long userId,
+        @NotNull long userId,
         @NotEmpty List<Long> dishIds,
-        @NotNull @NotEmpty @NotBlank String addition, String status) implements Serializable {
+        @NotNull @NotEmpty @NotBlank String addition,
+        String status) implements Serializable {
 }

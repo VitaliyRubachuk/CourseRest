@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface OrderMapper {
 
+    //orderdto - order
     @Mapping(target = "fullPrice", source = "fullprice")
     @Mapping(target = "status", source = "status")
     @Mapping(target = "dishIds", source = "dishes", qualifiedByName = "mapDishesToDishIds")

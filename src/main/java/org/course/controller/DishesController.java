@@ -1,5 +1,6 @@
 package org.course.controller;
 
+import jakarta.validation.Valid;
 import org.course.dto.DishesCreateDTO;
 import org.course.dto.DishesDto;
 import org.course.service.DishesService;
@@ -15,7 +16,6 @@ public class DishesController {
 
     private final DishesService dishesService;
 
-    @Autowired
     public DishesController(DishesService dishesService) {
         this.dishesService = dishesService;
     }
@@ -53,13 +53,13 @@ public class DishesController {
     }
 
     @PostMapping
-    public ResponseEntity<DishesDto> createDishes(@RequestBody DishesCreateDTO dishesCreateDTO) {
+    public ResponseEntity<DishesDto> createDishes(@Valid  @RequestBody DishesCreateDTO dishesCreateDTO) {
         DishesDto createdDishes = dishesService.createDishes(dishesCreateDTO);
         return ResponseEntity.status(201).body(createdDishes);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DishesDto> updateDishes(@PathVariable long id, @RequestBody DishesDto dishesDto) {
+    public ResponseEntity<DishesDto> updateDishes(@PathVariable long id,@Valid @RequestBody DishesDto dishesDto) {
         DishesDto updatedDishes = dishesService.updateDishes(id, dishesDto);
         return ResponseEntity.ok(updatedDishes);
     }

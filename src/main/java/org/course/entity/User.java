@@ -11,12 +11,18 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class User
-{
+
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  long id;
+    private long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
+
+    public User(long id) {
+        this.id = id;
+    }
+
 }

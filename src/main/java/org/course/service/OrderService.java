@@ -147,7 +147,7 @@ public class OrderService {
 
 
     public void deleteOrder(long id) {
-        orderRepository.deleteById(id);
-    }
+    orderRepository.deleteById(id);
+}
 
 }

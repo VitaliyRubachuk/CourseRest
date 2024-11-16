@@ -1,5 +1,6 @@
 package org.course.controller;
 
+import jakarta.validation.Valid;
 import org.course.dto.UserCreateDTO;
 import org.course.dto.UserDto;
 import org.course.service.UserService;
@@ -36,15 +37,13 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserCreateDTO userCreateDTO) {
-        System.out.println("Received request to create user: " + userCreateDTO);
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
         UserDto createdUser = userService.createUser(userCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable long id, @RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> updateUser(@PathVariable long id, @Valid @RequestBody UserDto userDto) {
         UserDto updatedUser = userService.updateUser(id, userDto);
         return ResponseEntity.ok(updatedUser);
     }
