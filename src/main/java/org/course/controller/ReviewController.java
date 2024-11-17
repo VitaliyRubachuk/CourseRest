@@ -72,10 +72,15 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
-        reviewService.deleteReview(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteReview(@PathVariable Long id) {
+        try {
+            reviewService.deleteReview(id);
+            return ResponseEntity.ok("Відгук успішно видалено.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Відгук не знайдено.");
+        }
     }
+
 
     @GetMapping
     public ResponseEntity<List<ReviewDto>> getAllReviews() {

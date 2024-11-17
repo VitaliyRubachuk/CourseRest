@@ -1,9 +1,11 @@
 package org.course.service;
 
+import org.course.entity.Tables;
 import jakarta.annotation.PostConstruct;
 import org.course.entity.Role;
 import org.course.entity.User;
 import org.course.repository.UserRepository;
+import org.course.repository.TableRepository;
 import org.course.mapper.UserMapper;
 import org.course.dto.UserDto;
 import org.course.dto.UserCreateDTO;
@@ -20,11 +22,13 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final TableRepository tableRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, TableRepository tableRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.tableRepository = tableRepository;  // Ініціалізація TableRepository
     }
 
     @Override
@@ -54,12 +58,22 @@ public class UserService implements UserDetailsService {
     public UserDto createUser(UserCreateDTO userCreateDTO) {
         System.out.println("Creating user with name: " + userCreateDTO.name());
 
+        // Перевіряємо, чи існує вже користувач з таким email
+        if (userRepository.findByEmail(userCreateDTO.email()).isPresent()) {
+            throw new RuntimeException("Email вже використовується");
+        }
+
+        // Якщо роль не вказана, присвоюємо "USER"
         if (userCreateDTO.role() == null || userCreateDTO.role().isEmpty()) {
             userCreateDTO = new UserCreateDTO(userCreateDTO.name(), userCreateDTO.email(), userCreateDTO.password(), "USER");
         }
 
         User user = userMapper.toEntity(userCreateDTO);
 
+        // Хешуємо пароль перед збереженням
+        user.setPassword(userCreateDTO.password());
+
+        // Зберігаємо нового користувача
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }
@@ -67,10 +81,10 @@ public class UserService implements UserDetailsService {
 
     @PostConstruct
     public void createDefaultAdmin() {
-        if (userRepository.findByEmail("admin@example.com").isEmpty()) {
+        if (userRepository.findByEmail("admin@a").isEmpty()) {
             User admin = new User();
             admin.setName("Admin");
-            admin.setEmail("admin@example.com");
+            admin.setEmail("admin@a");
             admin.setPassword("admin");
             admin.setRole(Role.ADMIN);
             userRepository.save(admin);
@@ -84,7 +98,23 @@ public class UserService implements UserDetailsService {
         return userMapper.toDto(updatedUser);
     }
 
-    public void deleteUser(long id) {
-        userRepository.deleteById(id);
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Користувач не знайдений"));
+
+        // Очистити поле user у всіх коментарях
+        user.getReviews().forEach(review -> review.setUser(null));
+
+        // Очистити всі резервування користувача на столах
+        user.getReservedTables().forEach(table -> {
+            table.setReserved(false);
+            table.setReservedByUser(null);
+            table.setReservedAt(null);
+        });
+
+        // Видалити користувача
+        userRepository.delete(user);
     }
+
+
 }

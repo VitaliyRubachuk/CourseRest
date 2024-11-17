@@ -16,7 +16,7 @@ import java.util.List;
 public class Dishes {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //IDENTITY
     private long id;
 
     @Column(name = "name")

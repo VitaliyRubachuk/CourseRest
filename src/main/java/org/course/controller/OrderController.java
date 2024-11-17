@@ -84,10 +84,16 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable long id) {
-        orderService.deleteOrder(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteOrder(@PathVariable long id) {
+        try {
+            orderService.deleteOrder(id);
+
+            return ResponseEntity.ok("Замовлення успішно видалено.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Замовлення не знайдено.");
+        }
     }
+
 
     @PutMapping("/{id}/status")
     public ResponseEntity<OrderDto> updateOrderStatus(@PathVariable long id, @RequestParam OrderStatus status) {

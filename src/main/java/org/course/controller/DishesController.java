@@ -5,6 +5,7 @@ import org.course.dto.DishesCreateDTO;
 import org.course.dto.DishesDto;
 import org.course.service.DishesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -84,8 +85,13 @@ public class DishesController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDishes(@PathVariable long id) {
-        dishesService.deleteDishes(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteDishes(@PathVariable long id) {
+        try {
+            dishesService.deleteDishes(id);
+            return ResponseEntity.ok("Блюдо успішно видалено.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Блюдо не знайдено.");
+        }
     }
+
 }
