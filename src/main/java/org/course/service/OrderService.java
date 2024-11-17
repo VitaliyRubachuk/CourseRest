@@ -11,6 +11,8 @@ import org.course.repository.DishesRepository;
 import org.course.repository.OrderRepository;
 import org.course.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -53,14 +55,23 @@ public class OrderService {
                 .map(orderMapper::toDto);
     }
 
-    public OrderDto createOrder(OrderCreateDTO orderCreateDTO) {
-        System.out.println("Received OrderCreateDTO: " + orderCreateDTO);
+    public List<OrderDto> getOrdersByUserEmail(String email) {
+        List<Order> orders = orderRepository.findByUserEmail(email);
 
-        User user = userRepository.findById(orderCreateDTO.userId())
+        return orders.stream()
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+
+    public OrderDto createOrder(OrderCreateDTO orderCreateDTO) {
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<Dishes> dishes = dishesRepository.findAllById(orderCreateDTO.dishIds());
 
+        List<Dishes> dishes = dishesRepository.findAllById(orderCreateDTO.dishIds());
 
         List<Dishes> orderedDishes = orderCreateDTO.dishIds().stream()
                 .map(dishId -> dishes.stream()
@@ -88,7 +99,6 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
         orderRepository.flush();
-        System.out.println("Saved Order: " + savedOrder);
 
         return orderMapper.toDto(savedOrder);
     }

@@ -13,6 +13,8 @@ public interface UserMapper {
     UserDto toDto(User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "role", source = "role")
     @Mapping(target = "id", ignore = true)
     User partialUpdate(UserDto userDto, @MappingTarget User user);
 

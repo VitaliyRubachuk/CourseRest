@@ -1,10 +1,28 @@
-    package org.course.dto;
-    import org.course.entity.OrderStatus;
+package org.course.dto;
 
-    import java.io.Serializable;
-    import java.util.List;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import org.course.entity.OrderStatus;
 
-    /**
-     * DTO for {@link org.course.entity.Order}
-     */
-    public record OrderDto(long id, long userId, List<Long> dishIds, double fullPrice, String addition, OrderStatus status) implements Serializable {}
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * DTO for {@link org.course.entity.Order}
+ */
+public record OrderDto(
+        long id,
+
+        @NotNull(message = "User ID не може бути порожнім")
+        long userId,
+
+        @NotEmpty(message = "Список страв не може бути порожнім")
+        List<Long> dishIds,
+
+        @NotNull(message = "Ціна не може бути порожньою")
+        double fullPrice,
+
+        String addition,
+
+        OrderStatus status) implements Serializable {
+}

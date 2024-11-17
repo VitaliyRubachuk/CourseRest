@@ -5,11 +5,14 @@ import org.course.dto.ReviewDto;
 import org.course.entity.Dishes;
 import org.course.entity.Review;
 import org.course.entity.User;
+import org.course.exception.UnauthorizedReviewUpdateException;
 import org.course.mapper.ReviewMapper;
 import org.course.repository.DishesRepository;
 import org.course.repository.ReviewRepository;
 import org.course.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -33,21 +36,50 @@ public class ReviewService {
         this.dishesRepository = dishesRepository;
     }
 
-
     public ReviewDto createReview(ReviewCreateDTO reviewCreateDTO) {
-        User user = userRepository.findById(reviewCreateDTO.userId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Користувач не знайдений"));
 
         Dishes dish = dishesRepository.findById(reviewCreateDTO.dishId())
-                .orElseThrow(() -> new RuntimeException("Dish not found"));
+                .orElseThrow(() -> new RuntimeException("Блюдо не знайдено"));
+
 
         Review review = reviewMapper.toEntity(reviewCreateDTO);
         review.setUser(user);
         review.setDish(dish);
 
+
         Review savedReview = reviewRepository.save(review);
 
         return reviewMapper.toDto(savedReview);
+    }
+
+    public ReviewDto updateReview(Long id, ReviewCreateDTO reviewCreateDTO) {
+
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Відгук не знайдений"));
+
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Користувач не знайдений"));
+
+        if (!review.getUser().getEmail().equals(email)) {
+            throw new UnauthorizedReviewUpdateException("Ви не можете редагувати відгук іншого користувача");
+        }
+
+        review.setComment(reviewCreateDTO.comment());
+        review.setRating(reviewCreateDTO.rating());
+
+        Review updatedReview = reviewRepository.save(review);
+
+        return reviewMapper.toDto(updatedReview);
     }
 
     public List<ReviewDto> getAllReviews() {

@@ -6,9 +6,11 @@ import org.course.dto.DishesDto;
 import org.course.service.DishesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/dishes")
@@ -32,7 +34,7 @@ public class DishesController {
         return ResponseEntity.ok(dishes);
     }
 
-    //true / false - зростання / спадання
+    // true / false - зростання / спадання
     @GetMapping("/sort/price/{order}")
     public ResponseEntity<List<DishesDto>> sortDishesByPrice(@PathVariable boolean order) {
         List<DishesDto> dishes = dishesService.sortDishesByPrice(order);
@@ -53,13 +55,30 @@ public class DishesController {
     }
 
     @PostMapping
-    public ResponseEntity<DishesDto> createDishes(@Valid  @RequestBody DishesCreateDTO dishesCreateDTO) {
+    public ResponseEntity<Object> createDishes(@Valid @RequestBody DishesCreateDTO dishesCreateDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+
+            List<String> errorMessages = bindingResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getDefaultMessage())
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.badRequest().body(errorMessages); // повертає список помилок як body
+        }
+
         DishesDto createdDishes = dishesService.createDishes(dishesCreateDTO);
         return ResponseEntity.status(201).body(createdDishes);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DishesDto> updateDishes(@PathVariable long id,@Valid @RequestBody DishesDto dishesDto) {
+    public ResponseEntity<Object> updateDishes(@PathVariable long id, @Valid @RequestBody DishesDto dishesDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getDefaultMessage())
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.badRequest().body(errorMessages);
+        }
+
         DishesDto updatedDishes = dishesService.updateDishes(id, dishesDto);
         return ResponseEntity.ok(updatedDishes);
     }
