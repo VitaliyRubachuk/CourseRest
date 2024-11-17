@@ -1,11 +1,13 @@
 package org.course.service;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.course.dto.DishesCreateDTO;
 import org.course.dto.DishesDto;
 import org.course.entity.Dishes;
 import org.course.mapper.DishesMapper;
 import org.course.repository.DishesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.Optional;
 @Service
 public class DishesService {
 
+    private static final Logger logger = LoggerFactory.getLogger(DishesService.class);
     private final DishesRepository dishesRepository;
     private final DishesMapper dishesMapper;
 
@@ -23,17 +26,21 @@ public class DishesService {
         this.dishesMapper = dishesMapper;
     }
 
-    public List<DishesDto> getAllDishes() {
-        return dishesRepository.findAll().stream()
+    public List<DishesDto> getAllDishes()
+    {
+        List<DishesDto> dishes = dishesRepository.findAll().stream()
                 .map(dishesMapper::toDto)
                 .toList();
+        return dishes;
     }
+
 
     public List<DishesDto> getDishesByCategory(String category) {
         return dishesRepository.findByCategory(category).stream()
                 .map(dishesMapper::toDto)
                 .toList();
     }
+
 
     public List<DishesDto> sortDishesByPrice(boolean ascending) {
         List<Dishes> dishes = ascending ? dishesRepository.findAllByOrderByPriceAsc() : dishesRepository.findAllByOrderByPriceDesc();
@@ -42,6 +49,7 @@ public class DishesService {
                 .toList();
     }
 
+
     public List<DishesDto> sortDishesByName(boolean ascending) {
         List<Dishes> dishes = ascending ? dishesRepository.findAllByOrderByNameAsc() : dishesRepository.findAllByOrderByNameDesc();
         return dishes.stream()
@@ -49,7 +57,9 @@ public class DishesService {
                 .toList();
     }
 
+    @Cacheable(value = "dishesCache", unless = "#result == null")
     public Optional<DishesDto> getDishesById(long id) {
+        logger.info("Запит на отримання страви..");
         return dishesRepository.findById(id)
                 .map(dishesMapper::toDto);
     }

@@ -1,5 +1,6 @@
 package org.course.service;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.course.dto.OrderCreateDTO;
 import org.course.dto.OrderDto;
 import org.course.entity.Dishes;
@@ -11,6 +12,7 @@ import org.course.repository.DishesRepository;
 import org.course.repository.OrderRepository;
 import org.course.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
 
+    private static final Logger logger = LoggerFactory.getLogger(DishesService.class);
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final UserRepository userRepository;
@@ -49,8 +52,9 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-
+    @Cacheable(value = "orderCache", unless = "#result == null")
     public Optional<OrderDto> getOrderById(long id) {
+        logger.info("Запит на отримання замовлення..");
         return orderRepository.findById(id)
                 .map(orderMapper::toDto);
     }

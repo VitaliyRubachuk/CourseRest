@@ -26,15 +26,6 @@ public record UserCreateDTO(
         @NotEmpty(message = "Пароль не може бути порожнім")
         @NotBlank(message = "Пароль не може бути порожнім")
         @Size(min = 6, message = "Пароль повинен містити не менше 6 символів")
-        String password,
-
-        String role
+        String password
 ) implements Serializable {
-
-    public UserCreateDTO {
-        // Якщо роль не вказана, присвоюємо "USER"
-        if (role == null || role.isEmpty()) {
-            role = "USER";
-        }
-    }
 }
