@@ -29,6 +29,13 @@ public class DishesController {
         return ResponseEntity.ok(dishes);
     }
 
+    @GetMapping("/{size}/page/{page}")
+    public ResponseEntity<List<DishesDto>> getDishesWithPagination(@PathVariable int size, @PathVariable int page) {
+        List<DishesDto> dishes = dishesService.getDishesWithPagination(size, page);
+        return ResponseEntity.ok(dishes);
+    }
+
+
     @GetMapping("/category/{category}")
     public ResponseEntity<List<DishesDto>> getDishesByCategory(@PathVariable String category) {
         List<DishesDto> dishes = dishesService.getDishesByCategory(category);

@@ -30,19 +30,31 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderDto>> getAllOrders(
-            @RequestParam(required = false) OrderStatus status) {
-        List<OrderDto> orders = orderService.getAllOrders(status);
+    public ResponseEntity<List<OrderDto>> getAllOrders(@RequestParam(required = false) OrderStatus status, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "100") int size) {
+        List<OrderDto> orders = orderService.getAllOrders(status, page, size);
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/my")
-    public ResponseEntity<List<OrderDto>> getMyOrders() {
+    public ResponseEntity<List<OrderDto>> getMyOrders(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "100") int size) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
+        List<OrderDto> orders = orderService.getOrdersByUserEmail(email, page, size);
 
-        List<OrderDto> orders = orderService.getOrdersByUserEmail(email);
+        return ResponseEntity.ok(orders);
+    }
 
+    @GetMapping("/{size}/page/{page}")
+    public ResponseEntity<List<OrderDto>> getAllOrdersWithPath(@PathVariable int size, @PathVariable int page, @RequestParam(required = false) OrderStatus status) {
+        List<OrderDto> orders = orderService.getAllOrders(status, page, size);
+        return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/my/{size}/page/{page}")
+    public ResponseEntity<List<OrderDto>> getMyOrdersWithPath(@PathVariable int size, @PathVariable int page) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+        List<OrderDto> orders = orderService.getOrdersByUserEmail(email, page, size);
         return ResponseEntity.ok(orders);
     }
 

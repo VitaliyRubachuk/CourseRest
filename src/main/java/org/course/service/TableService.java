@@ -23,6 +23,10 @@ import java.util.Optional;
 public class TableService {
 
     private final UserRepository userRepository;
+    private static final int MAX_SEATS = 30;
+    private static final Logger logger = LoggerFactory.getLogger(TableService.class);
+    private final TableRepository tableRepository;
+    private final TableMapper tableMapper;
 
     @Autowired
     public TableService(TableRepository tableRepository, TableMapper tableMapper, UserRepository userRepository) {
@@ -31,112 +35,143 @@ public class TableService {
         this.userRepository = userRepository;
     }
 
-
-    private static final int MAX_SEATS = 30;
-    private static final Logger logger = LoggerFactory.getLogger(DishesService.class);
-    private final TableRepository tableRepository;
-    private final TableMapper tableMapper;
-
-
     public List<TableDto> getAllTables() {
-        return tableRepository.findAll().stream()
+        logger.info("Отримання списку всіх столиків...");
+        List<TableDto> tables = tableRepository.findAll().stream()
                 .map(tableMapper::toDto)
                 .toList();
+        logger.info("Знайдено {} столиків", tables.size());
+        return tables;
     }
-
 
     @Cacheable(value = "tableCache", unless = "#result == null")
     public TableDto getTableById(long id) {
-        logger.info("Запит на отримання столика..");
-        return tableRepository.findById(id)
+        logger.info("Запит на отримання столика з ID: {}", id);
+        TableDto tableDto = tableRepository.findById(id)
                 .map(tableMapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Стіл не знайдено"));
+                .orElseThrow(() -> {
+                    logger.error("Стіл з ID {} не знайдено", id);
+                    return new RuntimeException("Стіл не знайдено");
+                });
+        logger.info("Стіл з ID {} успішно знайдено", id);
+        return tableDto;
     }
 
     public TableDto createTable(TableCreateDto tableCreateDto) {
+        logger.info("Створення нового столика з номером {}", tableCreateDto.tableNumber());
         if (tableCreateDto.seats() > MAX_SEATS) {
+            logger.warn("Кількість місць {} перевищує максимальне значення {}", tableCreateDto.seats(), MAX_SEATS);
             throw new IllegalArgumentException("Кількість місць за одним столом не може перевищувати " + MAX_SEATS);
         }
 
         if (tableRepository.existsByTableNumber(tableCreateDto.tableNumber())) {
+            logger.warn("Стіл з номером {} вже існує", tableCreateDto.tableNumber());
             throw new IllegalArgumentException("Стіл з таким номером вже існує");
         }
 
         Tables table = tableMapper.toEntity(tableCreateDto);
         Tables savedTable = tableRepository.save(table);
+        logger.info("Стіл з номером {} успішно створено", tableCreateDto.tableNumber());
         return tableMapper.toDto(savedTable);
     }
 
     public TableDto updateTable(long id, TableDto tableDto) {
+        logger.info("Оновлення столика з ID: {}", id);
         if (tableDto.seats() <= 0) {
+            logger.warn("Недопустима кількість місць: {}", tableDto.seats());
             throw new IllegalArgumentException("Кількість місць повинна бути більше нуля");
         }
 
         if (tableDto.seats() > MAX_SEATS) {
+            logger.warn("Кількість місць {} перевищує максимальне значення {}", tableDto.seats(), MAX_SEATS);
             throw new IllegalArgumentException("Кількість місць за одним столом не може перевищувати " + MAX_SEATS);
         }
 
         if (tableRepository.existsByTableNumberAndIdNot(tableDto.tableNumber(), id)) {
+            logger.warn("Стіл з номером {} вже існує", tableDto.tableNumber());
             throw new IllegalArgumentException("Стіл з таким номером вже існує");
         }
 
         Tables table = tableRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Стіл не знайдено"));
+                .orElseThrow(() -> {
+                    logger.error("Стіл з ID {} не знайдено", id);
+                    return new IllegalArgumentException("Стіл не знайдено");
+                });
 
         table.setTableNumber(tableDto.tableNumber());
         table.setSeats(tableDto.seats());
         table.setReserved(tableDto.isReserved());
 
         if (tableDto.isReserved()) {
+            logger.info("Резервування столика з ID: {} користувачем ID: {}", id, tableDto.reservedByUserId());
             User user = userRepository.findById(tableDto.reservedByUserId())
-                    .orElseThrow(() -> new IllegalArgumentException("Користувач не знайдений"));
+                    .orElseThrow(() -> {
+                        logger.error("Користувач з ID {} не знайдений", tableDto.reservedByUserId());
+                        return new IllegalArgumentException("Користувач не знайдений");
+                    });
 
             table.setReservedByUser(user);
             table.setReservedAt(LocalDateTime.now());
         } else {
+            logger.info("Скасування резервування столика з ID: {}", id);
             table.setReservedByUser(null);
             table.setReservedAt(null);
         }
 
         Tables updatedTable = tableRepository.save(table);
+        logger.info("Стіл з ID {} успішно оновлено", id);
         return tableMapper.toDto(updatedTable);
     }
 
-
-
     public void deleteTable(long id) {
+        logger.info("Видалення столика з ID: {}", id);
         if (!tableRepository.existsById(id)) {
+            logger.error("Стіл з ID {} не знайдено для видалення", id);
             throw new RuntimeException("Стіл не знайдено");
         }
         tableRepository.deleteById(id);
+        logger.info("Стіл з ID {} успішно видалено", id);
     }
 
     public TableDto reserveTable(long id) {
+        logger.info("Резервування столика з ID: {}", id);
         Tables table = tableRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Стіл не знайдено"));
+                .orElseThrow(() -> {
+                    logger.error("Стіл з ID {} не знайдено", id);
+                    return new RuntimeException("Стіл не знайдено");
+                });
 
         if (table.isReserved()) {
+            logger.warn("Стіл з ID {} вже зарезервований", id);
             throw new RuntimeException("Стіл вже зарезервований");
         }
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new RuntimeException("Користувач не знайдений"));
+                .orElseThrow(() -> {
+                    logger.error("Користувач з емейлом {} не знайдений", username);
+                    return new RuntimeException("Користувач не знайдений");
+                });
 
         table.setReserved(true);
         table.setReservedByUser(user);
         table.setReservedAt(LocalDateTime.now());
 
         Tables reservedTable = tableRepository.save(table);
+        logger.info("Стіл з ID {} успішно зарезервовано користувачем {}", id, username);
         return tableMapper.toDto(reservedTable);
     }
 
-
     public TableDto cancelReservation(long id) {
+        logger.info("Скасування резервування столика з ID: {}", id);
         Tables table = tableRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Стіл не знайдено"));
+                .orElseThrow(() -> {
+                    logger.error("Стіл з ID {} не знайдено", id);
+                    return new RuntimeException("Стіл не знайдено");
+                });
 
         if (!table.isReserved()) {
+            logger.warn("Стіл з ID {} не зарезервований", id);
             throw new RuntimeException("Стіл не зарезервований");
         }
 
@@ -145,13 +180,16 @@ public class TableService {
         table.setReservedAt(null);
 
         Tables updatedTable = tableRepository.save(table);
-
+        logger.info("Резервування столика з ID {} успішно скасовано", id);
         return tableMapper.toDto(updatedTable);
     }
 
     public List<TableDto> getAvailableTables() {
-        return tableRepository.findByIsReservedFalse().stream()
+        logger.info("Отримання списку вільних столиків...");
+        List<TableDto> availableTables = tableRepository.findByIsReservedFalse().stream()
                 .map(tableMapper::toDto)
                 .toList();
+        logger.info("Знайдено {} вільних столиків", availableTables.size());
+        return availableTables;
     }
 }

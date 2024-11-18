@@ -41,11 +41,9 @@ public class UserController {
     @PostMapping
     public ResponseEntity<Object> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO, BindingResult result) {
         if (result.hasErrors()) {
-            // Якщо є помилки валідації, формуємо список повідомлень
             StringBuilder errors = new StringBuilder();
             result.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append("\n"));
 
-            // Повертаємо статус BAD_REQUEST та повідомлення про помилки
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
         }
 
@@ -53,7 +51,6 @@ public class UserController {
             UserDto createdUser = userService.createUser(userCreateDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
         } catch (RuntimeException e) {
-            // Якщо виникає помилка (наприклад, email вже існує), повертаємо 400 зі специфічною помилкою
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -70,10 +67,8 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable long id) {
         try {
             userService.deleteUser(id);
-            // Повертаємо повідомлення про успішне видалення
             return ResponseEntity.ok("Користувача успішно видалено.");
         } catch (RuntimeException e) {
-            // Якщо виникає помилка (наприклад, користувача не знайдено), повертаємо 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Користувача не знайдено.");
         }
     }

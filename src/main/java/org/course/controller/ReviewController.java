@@ -33,14 +33,9 @@ public class ReviewController {
             List<String> errorMessages = bindingResult.getFieldErrors().stream()
                     .map(fieldError -> fieldError.getDefaultMessage())
                     .collect(Collectors.toList());
-
-
             return ResponseEntity.badRequest().body(errorMessages);
         }
-
-
         ReviewDto updatedReview = reviewService.updateReview(id, reviewCreateDTO);
-
         return ResponseEntity.ok(updatedReview);
     }
 
