@@ -5,6 +5,7 @@ import org.course.dto.ReviewDto;
 import org.course.entity.Dishes;
 import org.course.entity.Review;
 import org.course.entity.User;
+import org.course.exception.ReviewNotFoundException;
 import org.course.exception.UnauthorizedReviewUpdateException;
 import org.course.mapper.ReviewMapper;
 import org.course.repository.DishesRepository;
@@ -75,7 +76,7 @@ public class ReviewService {
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.error("Відгук з ID {} не знайдено", id);
-                    return new RuntimeException("Відгук не знайдений");
+                    return new ReviewNotFoundException("Відгук з ID " + id + " не знайдено");
                 });
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -136,6 +137,7 @@ public class ReviewService {
             logger.info("Відгук з ID {} успішно видалено", id);
         } else {
             logger.warn("Відгук з ID {} не знайдено для видалення", id);
+            throw new ReviewNotFoundException("Відгук з ID " + id + " не знайдено для видалення");
         }
     }
 
@@ -158,6 +160,7 @@ public class ReviewService {
             logger.info("Відгуки успішно відсортовано");
         } else {
             logger.warn("Некоректне поле сортування: {}", sortBy);
+            throw new IllegalArgumentException("Некоректне поле сортування: " + sortBy);
         }
 
         return reviews.stream()

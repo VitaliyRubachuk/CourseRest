@@ -14,6 +14,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.course.entity.User;
+import org.course.exception.TableNotFoundException;
+import org.course.exception.UserNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,7 +53,7 @@ public class TableService {
                 .map(tableMapper::toDto)
                 .orElseThrow(() -> {
                     logger.error("Стіл з ID {} не знайдено", id);
-                    return new RuntimeException("Стіл не знайдено");
+                    return new TableNotFoundException("Стіл з ID " + id + " не знайдено");
                 });
         logger.info("Стіл з ID {} успішно знайдено", id);
         return tableDto;
@@ -95,7 +97,7 @@ public class TableService {
         Tables table = tableRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.error("Стіл з ID {} не знайдено", id);
-                    return new IllegalArgumentException("Стіл не знайдено");
+                    return new TableNotFoundException("Стіл з ID " + id + " не знайдено");
                 });
 
         table.setTableNumber(tableDto.tableNumber());
@@ -107,7 +109,7 @@ public class TableService {
             User user = userRepository.findById(tableDto.reservedByUserId())
                     .orElseThrow(() -> {
                         logger.error("Користувач з ID {} не знайдений", tableDto.reservedByUserId());
-                        return new IllegalArgumentException("Користувач не знайдений");
+                        return new UserNotFoundException("Користувач з ID " + tableDto.reservedByUserId() + " не знайдений");
                     });
 
             table.setReservedByUser(user);
@@ -127,7 +129,7 @@ public class TableService {
         logger.info("Видалення столика з ID: {}", id);
         if (!tableRepository.existsById(id)) {
             logger.error("Стіл з ID {} не знайдено для видалення", id);
-            throw new RuntimeException("Стіл не знайдено");
+            throw new TableNotFoundException("Стіл з ID " + id + " не знайдено для видалення");
         }
         tableRepository.deleteById(id);
         logger.info("Стіл з ID {} успішно видалено", id);
@@ -138,7 +140,7 @@ public class TableService {
         Tables table = tableRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.error("Стіл з ID {} не знайдено", id);
-                    return new RuntimeException("Стіл не знайдено");
+                    return new TableNotFoundException("Стіл з ID " + id + " не знайдено");
                 });
 
         if (table.isReserved()) {
@@ -150,7 +152,7 @@ public class TableService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> {
                     logger.error("Користувач з емейлом {} не знайдений", username);
-                    return new RuntimeException("Користувач не знайдений");
+                    return new UserNotFoundException("Користувач з емейлом " + username + " не знайдений");
                 });
 
         table.setReserved(true);
@@ -167,7 +169,7 @@ public class TableService {
         Tables table = tableRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.error("Стіл з ID {} не знайдено", id);
-                    return new RuntimeException("Стіл не знайдено");
+                    return new TableNotFoundException("Стіл з ID " + id + " не знайдено");
                 });
 
         if (!table.isReserved()) {

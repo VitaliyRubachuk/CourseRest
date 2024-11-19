@@ -1,5 +1,5 @@
 package org.course.service;
-
+import org.course.repository.OrderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.course.dto.DishesCreateDTO;
@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Optional;
+import org.course.entity.Order;
 
 @Service
 public class DishesService {
@@ -23,109 +24,165 @@ public class DishesService {
     private static final Logger logger = LoggerFactory.getLogger(DishesService.class);
     private final DishesRepository dishesRepository;
     private final DishesMapper dishesMapper;
+    private final OrderRepository orderRepository;
 
     @Autowired
-    public DishesService(DishesRepository dishesRepository, DishesMapper dishesMapper) {
+    public DishesService(DishesRepository dishesRepository, DishesMapper dishesMapper, OrderRepository orderRepository) {
         this.dishesRepository = dishesRepository;
         this.dishesMapper = dishesMapper;
+        this.orderRepository = orderRepository;
     }
 
+
     public List<DishesDto> getAllDishes() {
-        logger.info("Отримання всіх страв з бази даних");
-        List<DishesDto> dishes = dishesRepository.findAll().stream()
-                .map(dishesMapper::toDto)
-                .toList();
-        logger.info("Знайдено {} страв", dishes.size());
-        return dishes;
+        try {
+            logger.info("Отримання всіх страв з бази даних");
+            List<DishesDto> dishes = dishesRepository.findAll().stream()
+                    .map(dishesMapper::toDto)
+                    .toList();
+            logger.info("Знайдено {} страв", dishes.size());
+            return dishes;
+        } catch (Exception e) {
+            logger.error("Помилка при отриманні всіх страв", e);
+            throw new RuntimeException("Помилка при отриманні всіх страв", e);
+        }
     }
 
     public List<DishesDto> getDishesWithPagination(int size, int page) {
-        logger.info("Отримання страв з пагінацією: сторінка {}, розмір {}", page, size);
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Dishes> dishesPage = dishesRepository.findAll(pageable);
-        if (dishesPage.isEmpty()) {
-            logger.warn("Не знайдено страв на сторінці {} з розміром {}", page, size);
+        try {
+            logger.info("Отримання страв з пагінацією: сторінка {}, розмір {}", page, size);
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Dishes> dishesPage = dishesRepository.findAll(pageable);
+            if (dishesPage.isEmpty()) {
+                logger.warn("Не знайдено страв на сторінці {} з розміром {}", page, size);
+            }
+            return dishesPage.stream()
+                    .map(dishesMapper::toDto)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Помилка при отриманні страв з пагінацією для сторінки {} і розміру {}", page, size, e);
+            throw new RuntimeException("Помилка при отриманні страв з пагінацією", e);
         }
-        return dishesPage.stream()
-                .map(dishesMapper::toDto)
-                .collect(Collectors.toList());
     }
 
     public List<DishesDto> getDishesByCategory(String category) {
-        logger.info("Отримання страв за категорією: {}", category);
-        List<DishesDto> dishes = dishesRepository.findByCategory(category).stream()
-                .map(dishesMapper::toDto)
-                .toList();
-        if (dishes.isEmpty()) {
-            logger.warn("Не знайдено жодної страви для категорії: {}", category);
+        try {
+            logger.info("Отримання страв за категорією: {}", category);
+            List<DishesDto> dishes = dishesRepository.findByCategory(category).stream()
+                    .map(dishesMapper::toDto)
+                    .toList();
+            if (dishes.isEmpty()) {
+                logger.warn("Не знайдено жодної страви для категорії: {}", category);
+            }
+            return dishes;
+        } catch (Exception e) {
+            logger.error("Помилка при отриманні страв за категорією {}", category, e);
+            throw new RuntimeException("Помилка при отриманні страв за категорією", e);
         }
-        return dishes;
     }
 
     public List<DishesDto> sortDishesByPrice(boolean ascending) {
-        logger.info("Сортування страв за ціною в порядку {}", ascending ? "зростання" : "спадання");
-        List<Dishes> dishes = ascending ? dishesRepository.findAllByOrderByPriceAsc() : dishesRepository.findAllByOrderByPriceDesc();
-        if (dishes.isEmpty()) {
-            logger.warn("Жодних страв для сортування за ціною");
+        try {
+            logger.info("Сортування страв за ціною в порядку {}", ascending ? "зростання" : "спадання");
+            List<Dishes> dishes = ascending ? dishesRepository.findAllByOrderByPriceAsc() : dishesRepository.findAllByOrderByPriceDesc();
+            if (dishes.isEmpty()) {
+                logger.warn("Жодних страв для сортування за ціною");
+            }
+            return dishes.stream()
+                    .map(dishesMapper::toDto)
+                    .toList();
+        } catch (Exception e) {
+            logger.error("Помилка при сортуванні страв за ціною", e);
+            throw new RuntimeException("Помилка при сортуванні страв за ціною", e);
         }
-        return dishes.stream()
-                .map(dishesMapper::toDto)
-                .toList();
     }
 
     public List<DishesDto> sortDishesByName(boolean ascending) {
-        logger.info("Сортування страв за назвою в порядку {}", ascending ? "зростання" : "спадання");
-        List<Dishes> dishes = ascending ? dishesRepository.findAllByOrderByNameAsc() : dishesRepository.findAllByOrderByNameDesc();
-        if (dishes.isEmpty()) {
-            logger.warn("Жодних страв для сортування за назвою");
+        try {
+            logger.info("Сортування страв за назвою в порядку {}", ascending ? "зростання" : "спадання");
+            List<Dishes> dishes = ascending ? dishesRepository.findAllByOrderByNameAsc() : dishesRepository.findAllByOrderByNameDesc();
+            if (dishes.isEmpty()) {
+                logger.warn("Жодних страв для сортування за назвою");
+            }
+            return dishes.stream()
+                    .map(dishesMapper::toDto)
+                    .toList();
+        } catch (Exception e) {
+            logger.error("Помилка при сортуванні страв за назвою", e);
+            throw new RuntimeException("Помилка при сортуванні страв за назвою", e);
         }
-        return dishes.stream()
-                .map(dishesMapper::toDto)
-                .toList();
     }
 
     @Cacheable(value = "dishesCache", unless = "#result == null")
     public Optional<DishesDto> getDishesById(long id) {
-        logger.info("Запит на отримання страви з ID: {}", id);
-        Optional<DishesDto> dish = dishesRepository.findById(id)
-                .map(dishesMapper::toDto);
-        if (dish.isEmpty()) {
-            logger.warn("Страва з ID: {} не знайдена", id);
-        } else {
-            logger.info("Страва з ID: {} знайдена", id);
+        try {
+            logger.info("Запит на отримання страви з ID: {}", id);
+            Optional<DishesDto> dish = dishesRepository.findById(id)
+                    .map(dishesMapper::toDto);
+            if (dish.isEmpty()) {
+                logger.warn("Страва з ID: {} не знайдена", id);
+            } else {
+                logger.info("Страва з ID: {} знайдена", id);
+            }
+            return dish;
+        } catch (Exception e) {
+            logger.error("Помилка при отриманні страви з ID: {}", id, e);
+            throw new RuntimeException("Помилка при отриманні страви", e);
         }
-        return dish;
     }
 
     public DishesDto createDishes(DishesCreateDTO dishesCreateDTO) {
-        logger.info("Створення нової страви з даними: {}", dishesCreateDTO);
-        Dishes dishes = dishesMapper.toEntity(dishesCreateDTO);
-        Dishes savedDishes = dishesRepository.save(dishes);
-        logger.info("Страва створена з ID: {}", savedDishes.getId());
-        return dishesMapper.toDto(savedDishes);
+        try {
+            logger.info("Створення нової страви з даними: {}", dishesCreateDTO);
+            Dishes dishes = dishesMapper.toEntity(dishesCreateDTO);
+            Dishes savedDishes = dishesRepository.save(dishes);
+            logger.info("Страва створена з ID: {}", savedDishes.getId());
+            return dishesMapper.toDto(savedDishes);
+        } catch (Exception e) {
+            logger.error("Помилка при створенні страви з даними: {}", dishesCreateDTO, e);
+            throw new RuntimeException("Помилка при створенні страви", e);
+        }
     }
 
     public DishesDto updateDishes(long id, DishesDto dishesDto) {
-        logger.info("Оновлення страви з ID: {}", id);
-        Dishes dishes = dishesRepository.findById(id)
-                .orElseThrow(() -> {
-                    logger.error("Страва з ID: {} не знайдена", id);
-                    return new RuntimeException("Страва не знайдена");
-                });
-        dishesMapper.partialUpdate(dishesDto, dishes);
-        Dishes updatedDishes = dishesRepository.save(dishes);
-        logger.info("Страва з ID: {} успішно оновлена", id);
-        return dishesMapper.toDto(updatedDishes);
+        try {
+            logger.info("Оновлення страви з ID: {}", id);
+            Dishes dishes = dishesRepository.findById(id)
+                    .orElseThrow(() -> {
+                        logger.error("Страва з ID: {} не знайдена", id);
+                        return new RuntimeException("Страва не знайдена");
+                    });
+            dishesMapper.partialUpdate(dishesDto, dishes);
+            Dishes updatedDishes = dishesRepository.save(dishes);
+            logger.info("Страва з ID: {} успішно оновлена", id);
+            return dishesMapper.toDto(updatedDishes);
+        } catch (Exception e) {
+            logger.error("Помилка при оновленні страви з ID: {}", id, e);
+            throw new RuntimeException("Помилка при оновленні страви", e);
+        }
     }
 
     public void deleteDishes(long id) {
-        logger.info("Видалення страви з ID: {}", id);
         try {
+            logger.info("Видалення страви з ID: {}", id);
+
+            List<Order> ordersWithDish = orderRepository.findAll().stream()
+                    .filter(order -> order.getDishes().stream().anyMatch(dish -> dish.getId() == id))
+                    .collect(Collectors.toList());
+
+            for (Order order : ordersWithDish) {
+                order.getDishes().removeIf(dish -> dish.getId() == id);
+                orderRepository.save(order);
+                logger.info("Страва з ID: {} була видалена з замовлення з ID: {}", id, order.getId());
+            }
+
             dishesRepository.deleteById(id);
+
             logger.info("Страва з ID: {} успішно видалена", id);
         } catch (Exception e) {
             logger.error("Помилка при видаленні страви з ID: {}", id, e);
-            throw e;
+            throw new RuntimeException("Помилка при видаленні страви", e);
         }
     }
+
 }

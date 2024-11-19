@@ -95,9 +95,9 @@ public class DishesController {
     public ResponseEntity<String> deleteDishes(@PathVariable long id) {
         try {
             dishesService.deleteDishes(id);
-            return ResponseEntity.ok("Блюдо успішно видалено.");
+            return ResponseEntity.ok("Страва успішно видалено.");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Блюдо не знайдено.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Страва не знайдено.");
         }
     }
 

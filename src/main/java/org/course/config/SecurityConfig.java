@@ -31,10 +31,12 @@ public class SecurityConfig {
                 .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/api/users").hasRole("ADMIN")
 
+                .requestMatchers(HttpMethod.GET, "/api/orders/{size}/page/{page}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/orders").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/orders/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/orders/{id}").hasRole("ADMIN")
 
+                .requestMatchers(HttpMethod.GET, "/api/dishes/{size}/page/{page}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/dishes").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/dishes/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/dishes/{id}").hasRole("ADMIN")

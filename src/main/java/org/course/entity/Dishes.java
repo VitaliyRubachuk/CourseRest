@@ -34,7 +34,8 @@ public class Dishes {
     @ManyToMany(mappedBy = "dishes")
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "dish")
+    @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
+
 
 }
