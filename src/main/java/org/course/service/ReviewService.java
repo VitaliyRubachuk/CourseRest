@@ -14,6 +14,8 @@ import org.course.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -39,7 +41,7 @@ public class ReviewService {
         this.userRepository = userRepository;
         this.dishesRepository = dishesRepository;
     }
-
+    @CacheEvict(value = {"reviewsByUser", "reviewsByDish", "allReviews","sortReviews"}, allEntries = true)
     public ReviewDto createReview(ReviewCreateDTO reviewCreateDTO) {
         logger.info("Створення нового відгуку для блюда ID: {}", reviewCreateDTO.dishId());
 
@@ -69,7 +71,7 @@ public class ReviewService {
 
         return reviewMapper.toDto(savedReview);
     }
-
+    @CacheEvict(value = {"reviewsByUser", "reviewsByDish", "allReviews", "sortReviews"}, allEntries = true)
     public ReviewDto updateReview(Long id, ReviewCreateDTO reviewCreateDTO) {
         logger.info("Оновлення відгуку з ID: {}", id);
 
@@ -102,7 +104,7 @@ public class ReviewService {
 
         return reviewMapper.toDto(updatedReview);
     }
-
+    @Cacheable("allReviews")
     public List<ReviewDto> getAllReviews() {
         logger.info("Отримання всіх відгуків...");
         List<ReviewDto> reviews = reviewRepository.findAll().stream()
@@ -111,7 +113,7 @@ public class ReviewService {
         logger.info("Знайдено {} відгуків", reviews.size());
         return reviews;
     }
-
+    @Cacheable(value = "reviewsByUser", key = "#userId")
     public List<ReviewDto> getReviewsByUser(Long userId) {
         logger.info("Отримання відгуків для користувача з ID: {}", userId);
         List<ReviewDto> reviews = reviewRepository.findByUserId(userId).stream()
@@ -120,7 +122,7 @@ public class ReviewService {
         logger.info("Знайдено {} відгуків для користувача з ID {}", reviews.size(), userId);
         return reviews;
     }
-
+    @Cacheable(value = "reviewsByDish", key = "#dishId")
     public List<ReviewDto> getReviewsByDish(Long dishId) {
         logger.info("Отримання відгуків для блюда з ID: {}", dishId);
         List<ReviewDto> reviews = reviewRepository.findByDishId(dishId).stream()
@@ -129,7 +131,7 @@ public class ReviewService {
         logger.info("Знайдено {} відгуків для блюда з ID {}", reviews.size(), dishId);
         return reviews;
     }
-
+    @CacheEvict(value = {"reviewsByUser", "reviewsByDish", "allReviews", "sortReviews"}, allEntries = true)
     public void deleteReview(Long id) {
         logger.info("Видалення відгуку з ID: {}", id);
         if (reviewRepository.existsById(id)) {
@@ -140,7 +142,7 @@ public class ReviewService {
             throw new ReviewNotFoundException("Відгук з ID " + id + " не знайдено для видалення");
         }
     }
-
+    @Cacheable("sortReviews")
     public List<ReviewDto> sortReviews(String sortBy, String order) {
         logger.info("Сортування відгуків за {} у порядку {}", sortBy, order);
         List<Review> reviews = reviewRepository.findAll();

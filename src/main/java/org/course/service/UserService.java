@@ -11,6 +11,7 @@ import org.course.mapper.UserMapper;
 import org.course.dto.UserDto;
 import org.course.dto.UserCreateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -56,7 +57,7 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("Помилка під час завантаження користувача");
         }
     }
-
+    @Cacheable(value = "usersCache", unless = "#result.isEmpty()")
     public List<UserDto> getAllUsers() {
         try {
             logger.info("Запит на отримання всіх користувачів");
@@ -69,7 +70,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    @Cacheable(cacheNames = "users")
+    @Cacheable(value = "userByIdCache", key = "#id", unless = "#result.isEmpty()")
     public Optional<UserDto> getUserById(long id) {
         try {
             logger.info("Запит на отримання користувача з ID: {}", id);
@@ -84,7 +85,7 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("Помилка при отриманні користувача з ID: " + id);
         }
     }
-
+    @CacheEvict(value = {"usersCache", "userByIdCache"}, allEntries = true)
     public UserDto createUser(UserCreateDTO userCreateDTO) {
         try {
             logger.info("Створення користувача з ім'ям: {}", userCreateDTO.name());
@@ -129,7 +130,7 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("Помилка при створенні адміністратора за замовчуванням");
         }
     }
-
+    @CacheEvict(value = {"usersCache", "userByIdCache"}, allEntries = true)
     public UserDto updateUser(long id, UserDto userDto) {
         try {
             logger.info("Оновлення користувача з ID: {}", id);
@@ -151,7 +152,7 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("Неочікувана помилка при оновленні користувача");
         }
     }
-
+    @CacheEvict(value = {"usersCache", "userByIdCache"}, allEntries = true)
     public void deleteUser(Long id) {
         try {
             logger.info("Видалення користувача з ID: {}", id);

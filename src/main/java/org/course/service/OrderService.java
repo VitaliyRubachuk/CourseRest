@@ -12,6 +12,7 @@ import org.course.repository.DishesRepository;
 import org.course.repository.OrderRepository;
 import org.course.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,7 +42,7 @@ public class OrderService {
         this.userRepository = userRepository;
         this.dishesRepository = dishesRepository;
     }
-
+    @Cacheable(value = "orderCache", key = "#status != null ? #status.name().concat(':').concat(#page).concat(':').concat(#size) : 'all:'.concat(#page).concat(':').concat(#size)")
     public List<OrderDto> getAllOrders(OrderStatus status, int page, int size) {
         try {
             logger.info("Отримання всіх замовлень із статусом {}, сторінка {}, розмір {}", status, page, size);
@@ -69,7 +70,7 @@ public class OrderService {
         }
     }
 
-    @Cacheable(value = "orderCache", unless = "#result == null")
+    @Cacheable(value = "orderCache", key = "#id", unless = "#result == null")
     public Optional<OrderDto> getOrderById(long id) {
         try {
             logger.info("Запит на отримання замовлення з ID: {}", id);
@@ -86,7 +87,7 @@ public class OrderService {
             throw new RuntimeException("Помилка при отриманні замовлення", e);
         }
     }
-
+    @Cacheable(value = "orderCache", key = "'user:'.concat(#email).concat(':').concat(#page).concat(':').concat(#size)", unless = "#result == null || #result.isEmpty()")
     public List<OrderDto> getOrdersByUserEmail(String email, int page, int size) {
         try {
             logger.info("Отримання замовлень для користувача з email: {}, сторінка {}, розмір {}", email, page, size);
@@ -105,7 +106,8 @@ public class OrderService {
             throw new RuntimeException("Помилка при отриманні замовлень для користувача", e);
         }
     }
- //cashевікт
+
+    @CacheEvict(value = "orderCache", allEntries = true)
     public OrderDto createOrder(OrderCreateDTO orderCreateDTO) {
         try {
             logger.info("Створення нового замовлення");
@@ -163,7 +165,7 @@ public class OrderService {
             throw new RuntimeException("Помилка при створенні замовлення", e);
         }
     }
-
+    @CacheEvict(value = "orderCache", allEntries = true)
     public OrderDto updateOrder(long id, OrderCreateDTO orderCreateDTO) {
         try {
             logger.info("Оновлення замовлення з ID: {}", id);
@@ -217,7 +219,7 @@ public class OrderService {
             throw new RuntimeException("Помилка при оновленні замовлення", e);
         }
     }
-
+    @CacheEvict(value = "orderCache", key = "#orderId")
     public OrderDto updateOrderStatus(long orderId, OrderStatus status) {
         try {
             logger.info("Оновлення статусу замовлення з ID: {} до {}", orderId, status);
@@ -243,7 +245,7 @@ public class OrderService {
             throw new RuntimeException("Помилка при оновленні статусу замовлення", e);
         }
     }
-
+    @CacheEvict(value = "orderCache", allEntries = true)
     public void deleteOrder(long id) {
         try {
             logger.info("Видалення замовлення з ID: {}", id);

@@ -8,6 +8,7 @@ import org.course.entity.Dishes;
 import org.course.mapper.DishesMapper;
 import org.course.repository.DishesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +34,7 @@ public class DishesService {
         this.orderRepository = orderRepository;
     }
 
-
+    @Cacheable(value = "dishesCache", unless = "#result == null || #result.isEmpty()")
     public List<DishesDto> getAllDishes() {
         try {
             logger.info("Отримання всіх страв з бази даних");
@@ -47,7 +48,7 @@ public class DishesService {
             throw new RuntimeException("Помилка при отриманні всіх страв", e);
         }
     }
-
+    @Cacheable(value = "dishesCache", unless = "#result == null || #result.isEmpty()")
     public List<DishesDto> getDishesWithPagination(int size, int page) {
         try {
             logger.info("Отримання страв з пагінацією: сторінка {}, розмір {}", page, size);
@@ -64,7 +65,7 @@ public class DishesService {
             throw new RuntimeException("Помилка при отриманні страв з пагінацією", e);
         }
     }
-
+    @Cacheable(value = "dishesCache", unless = "#result == null || #result.isEmpty()")
     public List<DishesDto> getDishesByCategory(String category) {
         try {
             logger.info("Отримання страв за категорією: {}", category);
@@ -80,7 +81,7 @@ public class DishesService {
             throw new RuntimeException("Помилка при отриманні страв за категорією", e);
         }
     }
-
+    @Cacheable(value = "dishesCache", unless = "#result == null || #result.isEmpty()")
     public List<DishesDto> sortDishesByPrice(boolean ascending) {
         try {
             logger.info("Сортування страв за ціною в порядку {}", ascending ? "зростання" : "спадання");
@@ -96,7 +97,7 @@ public class DishesService {
             throw new RuntimeException("Помилка при сортуванні страв за ціною", e);
         }
     }
-
+    @Cacheable(value = "dishesCache", unless = "#result == null || #result.isEmpty()")
     public List<DishesDto> sortDishesByName(boolean ascending) {
         try {
             logger.info("Сортування страв за назвою в порядку {}", ascending ? "зростання" : "спадання");
@@ -130,7 +131,7 @@ public class DishesService {
             throw new RuntimeException("Помилка при отриманні страви", e);
         }
     }
-
+    @CacheEvict(value = "dishesCache", allEntries = true)
     public DishesDto createDishes(DishesCreateDTO dishesCreateDTO) {
         try {
             logger.info("Створення нової страви з даними: {}", dishesCreateDTO);
@@ -143,7 +144,7 @@ public class DishesService {
             throw new RuntimeException("Помилка при створенні страви", e);
         }
     }
-
+    @CacheEvict(value = "dishesCache", allEntries = true)
     public DishesDto updateDishes(long id, DishesDto dishesDto) {
         try {
             logger.info("Оновлення страви з ID: {}", id);
@@ -161,7 +162,7 @@ public class DishesService {
             throw new RuntimeException("Помилка при оновленні страви", e);
         }
     }
-
+    @CacheEvict(value = "dishesCache", allEntries = true)
     public void deleteDishes(long id) {
         try {
             logger.info("Видалення страви з ID: {}", id);

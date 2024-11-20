@@ -1,0 +1,19 @@
+2024-11-20 13:10:00 - INFO - org.course.service.TableService - Скасування резервування  столика з ID: 1
+2024-11-20 13:10:00 - INFO - org.course.service.TableService - Резервування столика з ID 1 успішно скасовано
+2024-11-20 13:10:05 - INFO - org.course.service.TableService - Отримання списку всіх столиків...
+2024-11-20 13:10:05 - INFO - org.course.service.TableService - Знайдено 1 столиків
+2024-11-20 13:10:12 - INFO - o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-20 13:10:12 - INFO - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-11-20 13:10:12 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Before shutdown stats (total=10, active=0, idle=10, waiting=0)
+2024-11-20 13:10:12 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@144440f5: (connection evicted)
+2024-11-20 13:10:12 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@766a76ec: (connection evicted)
+2024-11-20 13:10:12 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@37577cd7: (connection evicted)
+2024-11-20 13:10:12 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@62a6beb: (connection evicted)
+2024-11-20 13:10:12 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@57788398: (connection evicted)
+2024-11-20 13:10:12 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@53363849: (connection evicted)
+2024-11-20 13:10:12 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@496ee34: (connection evicted)
+2024-11-20 13:10:12 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@2e355946: (connection evicted)
+2024-11-20 13:10:12 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@6a53dde7: (connection evicted)
+2024-11-20 13:10:12 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@3cfe4975: (connection evicted)
+2024-11-20 13:10:12 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After shutdown stats (total=0, active=0, idle=0, waiting=0)
+2024-11-20 13:10:12 - INFO - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.course.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ public class TableService {
         this.userRepository = userRepository;
     }
 
+    @Cacheable(value = "allTablesCache", unless = "#result.isEmpty()")
     public List<TableDto> getAllTables() {
         logger.info("Отримання списку всіх столиків...");
         List<TableDto> tables = tableRepository.findAll().stream()
@@ -46,7 +48,7 @@ public class TableService {
         return tables;
     }
 
-    @Cacheable(value = "tableCache", unless = "#result == null")
+    @Cacheable(value = "IDTablesCache", key = "#id", unless = "#result == null")
     public TableDto getTableById(long id) {
         logger.info("Запит на отримання столика з ID: {}", id);
         TableDto tableDto = tableRepository.findById(id)
@@ -59,6 +61,7 @@ public class TableService {
         return tableDto;
     }
 
+    @CacheEvict(value = {"IDTablesCache", "allTablesCache", "AvailableTablesCache"}, allEntries = true)
     public TableDto createTable(TableCreateDto tableCreateDto) {
         logger.info("Створення нового столика з номером {}", tableCreateDto.tableNumber());
         if (tableCreateDto.seats() > MAX_SEATS) {
@@ -77,6 +80,7 @@ public class TableService {
         return tableMapper.toDto(savedTable);
     }
 
+    @CacheEvict(value = {"IDTablesCache", "allTablesCache", "AvailableTablesCache"}, allEntries = true)
     public TableDto updateTable(long id, TableDto tableDto) {
         logger.info("Оновлення столика з ID: {}", id);
         if (tableDto.seats() <= 0) {
@@ -125,6 +129,7 @@ public class TableService {
         return tableMapper.toDto(updatedTable);
     }
 
+    @CacheEvict(value = {"IDTablesCache", "allTablesCache", "AvailableTablesCache"}, allEntries = true)
     public void deleteTable(long id) {
         logger.info("Видалення столика з ID: {}", id);
         if (!tableRepository.existsById(id)) {
@@ -135,6 +140,7 @@ public class TableService {
         logger.info("Стіл з ID {} успішно видалено", id);
     }
 
+    @CacheEvict(value = {"IDTablesCache", "allTablesCache", "AvailableTablesCache"}, allEntries = true)
     public TableDto reserveTable(long id) {
         logger.info("Резервування столика з ID: {}", id);
         Tables table = tableRepository.findById(id)
@@ -164,11 +170,12 @@ public class TableService {
         return tableMapper.toDto(reservedTable);
     }
 
+    @CacheEvict(value = {"IDTablesCache", "allTablesCache", "AvailableTablesCache"}, allEntries = true)
     public TableDto cancelReservation(long id) {
-        logger.info("Скасування резервування столика з ID: {}", id);
+        logger.info("Скасування резервування  столика з ID: {}", id);
         Tables table = tableRepository.findById(id)
                 .orElseThrow(() -> {
-                    logger.error("Стіл з ID {} не знайдено", id);
+                    logger.error("Стіл з ID {}  не  знайдено", id);
                     return new TableNotFoundException("Стіл з ID " + id + " не знайдено");
                 });
 
@@ -185,7 +192,7 @@ public class TableService {
         logger.info("Резервування столика з ID {} успішно скасовано", id);
         return tableMapper.toDto(updatedTable);
     }
-
+    @Cacheable(value = "AvailableTablesCache", unless = "#result.isEmpty()")
     public List<TableDto> getAvailableTables() {
         logger.info("Отримання списку вільних столиків...");
         List<TableDto> availableTables = tableRepository.findByIsReservedFalse().stream()
