@@ -1,0 +1,165 @@
+2024-11-20 11:38:04 - INFO - org.course.service.TableService - Отримання списку всіх столиків...
+2024-11-20 11:38:04 - INFO - org.course.service.TableService - Знайдено 0 столиків
+2024-11-20 11:38:10 - INFO - org.course.service.TableService - Отримання списку всіх столиків...
+2024-11-20 11:38:10 - INFO - org.course.service.TableService - Знайдено 0 столиків
+2024-11-20 11:38:10 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+2024-11-20 11:38:10 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled.
+2024-11-20 11:38:21 - INFO - org.course.service.TableService - Отримання списку всіх столиків...
+2024-11-20 11:38:21 - INFO - org.course.service.TableService - Знайдено 0 столиків
+2024-11-20 11:38:38 - INFO - o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-20 11:38:38 - INFO - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2024-11-20 11:38:38 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Before shutdown stats (total=10, active=0, idle=10, waiting=0)
+2024-11-20 11:38:38 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@42cfd794: (connection evicted)
+2024-11-20 11:38:38 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@27eadbec: (connection evicted)
+2024-11-20 11:38:38 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@66d7d1d7: (connection evicted)
+2024-11-20 11:38:38 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@57fb17cc: (connection evicted)
+2024-11-20 11:38:38 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@6f82e98: (connection evicted)
+2024-11-20 11:38:38 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@2b6d4d9: (connection evicted)
+2024-11-20 11:38:38 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@5ceb5ae9: (connection evicted)
+2024-11-20 11:38:38 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@406a7096: (connection evicted)
+2024-11-20 11:38:38 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@35239a06: (connection evicted)
+2024-11-20 11:38:38 - DEBUG - com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection com.mysql.cj.jdbc.ConnectionImpl@21814e43: (connection evicted)
+2024-11-20 11:38:38 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After shutdown stats (total=0, active=0, idle=0, waiting=0)
+2024-11-20 11:38:38 - INFO - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2024-11-20 11:38:41 - DEBUG - org.jboss.logging - Logging Provider: org.jboss.logging.Slf4jLoggerProvider found via system property
+2024-11-20 11:38:41 - INFO - org.course.CourseApplication - Starting CourseApplication using Java 22.0.2 with PID 2168 (F:\4 курс\course\target\classes started by Віталій in F:\4 курс\course)
+2024-11-20 11:38:41 - DEBUG - org.course.CourseApplication - Running with Spring Boot v3.3.5, Spring v6.1.14
+2024-11-20 11:38:41 - INFO - org.course.CourseApplication - No active profile set, falling back to 1 default profile: "default"
+2024-11-20 11:38:41 - INFO - o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-20 11:38:41 - INFO - o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 60 ms. Found 5 JPA repository interfaces.
+2024-11-20 11:38:42 - INFO - o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2024-11-20 11:38:42 - INFO - o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2024-11-20 11:38:42 - INFO - o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-11-20 11:38:42 - INFO - o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2024-11-20 11:38:42 - INFO - o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-11-20 11:38:42 - INFO - o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1357 ms
+2024-11-20 11:38:42 - DEBUG - com.zaxxer.hikari.HikariConfig - Driver class com.mysql.cj.jdbc.Driver found in Thread context class loader jdk.internal.loader.ClassLoaders$AppClassLoader@3fee733d
+2024-11-20 11:38:43 - INFO - o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - HikariPool-1 - configuration:
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - allowPoolSuspension.............false
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - autoCommit......................true
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - catalog.........................none
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - connectionInitSql...............none
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - connectionTestQuery.............none
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - connectionTimeout...............30000
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - dataSource......................none
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - dataSourceClassName.............none
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - dataSourceJNDI..................none
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - dataSourceProperties............{password=<masked>}
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - driverClassName................."com.mysql.cj.jdbc.Driver"
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - exceptionOverrideClassName......none
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - healthCheckProperties...........{}
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - healthCheckRegistry.............none
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - idleTimeout.....................600000
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - initializationFailTimeout.......1
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - isolateInternalQueries..........false
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - jdbcUrl.........................jdbc:mysql://localhost:3306/rest
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - keepaliveTime...................0
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - leakDetectionThreshold..........0
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - maxLifetime.....................1800000
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - maximumPoolSize.................10
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - metricRegistry..................none
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - metricsTrackerFactory...........none
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - minimumIdle.....................10
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - password........................<masked>
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - poolName........................"HikariPool-1"
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - readOnly........................false
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - registerMbeans..................false
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - scheduledExecutor...............none
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - schema..........................none
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - threadFactory...................internal
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - transactionIsolation............default
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - username........................"root"
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.HikariConfig - validationTimeout...............5000
+2024-11-20 11:38:43 - INFO - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2024-11-20 11:38:43 - INFO - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@17f41739
+2024-11-20 11:38:43 - INFO - com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2024-11-20 11:38:43 - WARN - org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-20 11:38:43 - WARN - org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=1, active=0, idle=1, waiting=0)
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@e917889
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After adding stats (total=2, active=0, idle=2, waiting=0)
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4fac72b2
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After adding stats (total=3, active=0, idle=3, waiting=0)
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7e297e7c
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After adding stats (total=4, active=0, idle=4, waiting=0)
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2f838dfd
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After adding stats (total=5, active=0, idle=5, waiting=0)
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2bcdd6d7
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After adding stats (total=6, active=0, idle=6, waiting=0)
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@64d63295
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After adding stats (total=7, active=0, idle=7, waiting=0)
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2b12720a
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After adding stats (total=8, active=0, idle=8, waiting=0)
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7cdf6a93
+2024-11-20 11:38:43 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After adding stats (total=9, active=0, idle=9, waiting=0)
+2024-11-20 11:38:44 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4917ee29
+2024-11-20 11:38:44 - DEBUG - com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After adding stats (total=10, active=0, idle=10, waiting=0)
+2024-11-20 11:38:44 - INFO - o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-20 11:38:45 - INFO - org.course.service.UserService - Перевірка наявності адміністратора за замовчуванням
+2024-11-20 11:38:45 - INFO - org.course.service.UserService - Адміністратор за замовчуванням вже існує
+2024-11-20 11:38:45 - INFO - o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-11-20 11:38:45 - WARN - o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-20 11:38:45 - INFO - o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name userService
+2024-11-20 11:38:45 - DEBUG - _.s.w.s.HandlerMapping.Mappings - 
+	o.c.c.DishesController:
+	{GET [/api/dishes/category/{category}]}: getDishesByCategory(String)
+	{GET [/api/dishes/{size}/page/{page}]}: getDishesWithPagination(int,int)
+	{GET [/api/dishes/{id}]}: getDishesById(long)
+	{GET [/api/dishes]}: getAllDishes()
+	{GET [/api/dishes/sort/name/{order}]}: sortDishesByName(boolean)
+	{DELETE [/api/dishes/{id}]}: deleteDishes(long)
+	{GET [/api/dishes/sort/price/{order}]}: sortDishesByPrice(boolean)
+	{PUT [/api/dishes/{id}]}: updateDishes(long,DishesDto,BindingResult)
+	{POST [/api/dishes]}: createDishes(DishesCreateDTO,BindingResult)
+2024-11-20 11:38:45 - DEBUG - _.s.w.s.HandlerMapping.Mappings - 
+	o.c.c.OrderController:
+	{GET [/api/orders/{size}/page/{page}]}: getAllOrdersWithPath(int,int,OrderStatus)
+	{GET [/api/orders/my/{size}/page/{page}]}: getMyOrdersWithPath(int,int)
+	{GET [/api/orders/my]}: getMyOrders(int,int)
+	{PUT [/api/orders/{id}]}: updateOrder(long,OrderCreateDTO,BindingResult)
+	{DELETE [/api/orders/{id}]}: deleteOrder(long)
+	{PUT [/api/orders/{id}/status]}: updateOrderStatus(long,OrderStatus)
+	{GET [/api/orders/{id}]}: getOrderById(long)
+	{POST [/api/orders]}: createOrder(OrderCreateDTO,BindingResult)
+	{GET [/api/orders]}: getAllOrders(OrderStatus,int,int)
+2024-11-20 11:38:45 - DEBUG - _.s.w.s.HandlerMapping.Mappings - 
+	o.c.c.ReviewController:
+	{POST [/api/reviews]}: addReview(ReviewCreateDTO,BindingResult)
+	{PUT [/api/reviews/{id}]}: updateReview(Long,ReviewCreateDTO,BindingResult)
+	{GET [/api/reviews/sort]}: sortReviews(String,String)
+	{GET [/api/reviews/user/{userId}]}: getReviewsByUserId(Long)
+	{GET [/api/reviews]}: getAllReviews()
+	{GET [/api/reviews/dish/{dishId}]}: getReviewsByDishId(Long)
+	{DELETE [/api/reviews/{id}]}: deleteReview(Long)
+2024-11-20 11:38:45 - DEBUG - _.s.w.s.HandlerMapping.Mappings - 
+	o.c.c.TableController:
+	{PUT [/api/tables/{id}]}: updateTable(long,TableDto,BindingResult)
+	{DELETE [/api/tables/{id}]}: deleteTable(long)
+	{GET [/api/tables]}: getAllTables()
+	{GET [/api/tables/available]}: getAvailableTables()
+	{POST [/api/tables]}: createTable(TableCreateDto,BindingResult)
+	{DELETE [/api/tables/{id}/reserve]}: cancelReservation(long)
+	{GET [/api/tables/{id}]}: getTableById(long)
+	{POST [/api/tables/{id}/reserve]}: reserveTable(long)
+2024-11-20 11:38:45 - DEBUG - _.s.w.s.HandlerMapping.Mappings - 
+	o.c.c.UserController:
+	{DELETE [/api/users/{id}]}: deleteUser(long)
+	{PUT [/api/users/{id}]}: updateUser(long,UserDto)
+	{POST [/api/users]}: createUser(UserCreateDTO,BindingResult)
+	{GET [/api/users]}: getAllUsers()
+	{GET [/api/users/{id}]}: getUserById(long)
+2024-11-20 11:38:45 - DEBUG - _.s.w.s.HandlerMapping.Mappings - 
+	o.s.b.a.w.s.e.BasicErrorController:
+	{ [/error]}: error(HttpServletRequest)
+	{ [/error], produces [text/html]}: errorHtml(HttpServletRequest,HttpServletResponse)
+2024-11-20 11:38:45 - DEBUG - _.s.w.s.HandlerMapping.Mappings - 'beanNameHandlerMapping' {}
+2024-11-20 11:38:46 - DEBUG - _.s.w.s.HandlerMapping.Mappings - 'resourceHandlerMapping' {/webjars/**=ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]], /**=ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]}
+2024-11-20 11:38:46 - INFO - o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2024-11-20 11:38:46 - INFO - o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2024-11-20 11:38:46 - INFO - org.course.CourseApplication - Started CourseApplication in 5.752 seconds (process running for 6.387)
+2024-11-20 11:38:48 - INFO - o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-20 11:38:48 - INFO - o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-11-20 11:38:48 - INFO - o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2024-11-20 11:38:48 - INFO - org.course.service.TableService - Отримання списку всіх столиків...
+2024-11-20 11:38:48 - INFO - org.course.service.TableService - Знайдено 0 столиків
