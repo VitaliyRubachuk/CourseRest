@@ -223,12 +223,14 @@ public class OrderService {
     public OrderDto updateOrderStatus(long orderId, OrderStatus status) {
         try {
             logger.info("Оновлення статусу замовлення з ID: {} до {}", orderId, status);
+
             Order order = orderRepository.findById(orderId)
                     .orElseThrow(() -> {
                         logger.error("Замовлення з ID: {} не знайдено", orderId);
-                        return new RuntimeException("Order not found");
+                        return new RuntimeException("Замовлення не знайдено");
                     });
             order.setStatus(status);
+
             Order updatedOrder = orderRepository.save(order);
             logger.info("Статус замовлення з ID: {} успішно оновлено до {}", orderId, status);
 
@@ -240,11 +242,76 @@ public class OrderService {
                     updatedOrder.getAddition(),
                     updatedOrder.getStatus()
             );
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             logger.error("Помилка при оновленні статусу замовлення з ID: {}", orderId, e);
-            throw new RuntimeException("Помилка при оновленні статусу замовлення", e);
+            throw e;
+        } catch (Exception e) {
+            logger.error("Несподівана помилка при оновленні статусу замовлення з ID: {}", orderId, e);
+            throw new RuntimeException("Несподівана помилка при оновленні статусу замовлення", e);
         }
     }
+
+    @CacheEvict(value = "orderCache", allEntries = true)
+    public OrderDto updateUserOrder(long id, OrderCreateDTO orderCreateDTO, String email) {
+        try {
+            logger.info("Оновлення замовлення з ID: {} користувачем із email: {}", id, email);
+
+            Order order = orderRepository.findById(id)
+                    .orElseThrow(() -> {
+                        logger.error("Замовлення з ID: {} не знайдено", id);
+                        return new RuntimeException("Order not found");
+                    });
+
+            if (!order.getUser().getEmail().equals(email)) {
+                logger.error("Користувач з email: {} не має доступу до замовлення з ID: {}", email, id);
+                throw new RuntimeException("Access denied");
+            }
+
+            order.setAddition(orderCreateDTO.addition());
+            logger.info("Додаткова інформація оновлена");
+
+            List<Dishes> dishes = dishesRepository.findAllById(orderCreateDTO.dishIds());
+            if (dishes.isEmpty()) {
+                logger.error("Страви для оновлення замовлення не знайдено");
+                throw new RuntimeException("No dishes found for update");
+            }
+
+            List<Dishes> updatedDishes = new ArrayList<>();
+            for (Long dishId : orderCreateDTO.dishIds()) {
+                Dishes dish = dishes.stream()
+                        .filter(d -> d.getId() == dishId)
+                        .findFirst()
+                        .orElseThrow(() -> {
+                            logger.error("Страву з ID: {} не знайдено", dishId);
+                            return new RuntimeException("Dish not found");
+                        });
+                updatedDishes.add(dish);
+            }
+            order.setDishes(updatedDishes);
+            logger.info("Список страв замовлення оновлено");
+
+            double updatedTotalPrice = updatedDishes.stream()
+                    .mapToDouble(Dishes::getPrice)
+                    .sum();
+            order.setFullprice(updatedTotalPrice);
+            logger.info("Загальна ціна замовлення оновлена: {}", updatedTotalPrice);
+
+            order.updateDishIdsString();
+            if (orderCreateDTO.status() != null) {
+                order.setStatus(OrderStatus.valueOf(orderCreateDTO.status()));
+                logger.info("Статус замовлення оновлено до: {}", orderCreateDTO.status());
+            }
+
+            order = orderRepository.save(order);
+            logger.info("Замовлення з ID: {} успішно оновлено користувачем із email: {}", id, email);
+
+            return orderMapper.toDto(order);
+        } catch (Exception e) {
+            logger.error("Помилка при оновленні замовлення з ID: {} користувачем із email: {}", id, email, e);
+            throw new RuntimeException("Помилка при оновленні замовлення", e);
+        }
+    }
+
     @CacheEvict(value = "orderCache", allEntries = true)
     public void deleteOrder(long id) {
         try {

@@ -35,7 +35,6 @@ public class DishesController {
         return ResponseEntity.ok(dishes);
     }
 
-
     @GetMapping("/category/{category}")
     public ResponseEntity<List<DishesDto>> getDishesByCategory(@PathVariable String category) {
         List<DishesDto> dishes = dishesService.getDishesByCategory(category);

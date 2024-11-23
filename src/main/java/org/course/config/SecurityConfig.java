@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/api/users").hasRole("ADMIN")
 
+                .requestMatchers(HttpMethod.PUT, "/api/orders/my/{id}").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/orders/{size}/page/{page}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/orders").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/orders/{id}").hasRole("ADMIN")
@@ -41,7 +42,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/dishes/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/dishes/{id}").hasRole("ADMIN")
 
-                .requestMatchers(HttpMethod.PUT, "/api/reviews/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/reviews/{id}").hasAnyRole("USER", "ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/reviews/{id}").hasRole("ADMIN")
 
                 .requestMatchers(HttpMethod.POST, "/api/tables/{id}/reserve").hasAnyRole("USER", "ADMIN")

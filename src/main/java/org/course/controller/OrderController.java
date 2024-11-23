@@ -1,5 +1,4 @@
 package org.course.controller;
-
 import jakarta.validation.Valid;
 import org.course.dto.OrderCreateDTO;
 import org.course.dto.OrderDto;
@@ -14,8 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -40,7 +38,6 @@ public class OrderController {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
         List<OrderDto> orders = orderService.getOrdersByUserEmail(email, page, size);
-
         return ResponseEntity.ok(orders);
     }
 
@@ -72,10 +69,8 @@ public class OrderController {
             List<String> errorMessages = bindingResult.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage)
                     .collect(Collectors.toList());
-
             return ResponseEntity.badRequest().body(errorMessages);
         }
-
         OrderDto createdOrder = orderService.createOrder(orderCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
     }
@@ -87,10 +82,8 @@ public class OrderController {
             List<String> errorMessages = bindingResult.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage)
                     .collect(Collectors.toList());
-
             return ResponseEntity.badRequest().body(errorMessages);
         }
-
         OrderDto updatedOrder = orderService.updateOrder(id, orderCreateDTO);
         return ResponseEntity.ok(updatedOrder);
     }
@@ -106,10 +99,48 @@ public class OrderController {
         }
     }
 
+    @PutMapping("/my/{id}")
+    public ResponseEntity<OrderDto> updateMyOrder(
+            @PathVariable long id,
+            @Valid @RequestBody OrderCreateDTO orderCreateDTO,
+            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            String errors = bindingResult.getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.joining(", "));
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+
+        try {
+            OrderDto updatedOrder = orderService.updateUserOrder(id, orderCreateDTO, email);
+            return ResponseEntity.ok(updatedOrder);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+    }
+
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<OrderDto> updateOrderStatus(@PathVariable long id, @RequestParam OrderStatus status) {
-        OrderDto updatedOrder = orderService.updateOrderStatus(id, status);
-        return ResponseEntity.ok(updatedOrder);
+    public ResponseEntity<?> updateOrderStatus(@PathVariable long id, @RequestBody Map<String, String> request) {
+        String statusString = request.get("status");
+        try {
+            OrderStatus status = OrderStatus.valueOf(statusString.toUpperCase());
+            OrderDto updatedOrder = orderService.updateOrderStatus(id, status);
+            return ResponseEntity.ok(updatedOrder);
+        } catch (IllegalArgumentException e) {
+            String errorMessage = String.format("Статус '%s' є некоректним. Доступні значення: %s.",
+                    statusString,
+                    Arrays.stream(OrderStatus.values())
+                            .map(Enum::name)
+                            .collect(Collectors.joining(", ")));
+            return ResponseEntity.badRequest().body(Collections.singletonMap("error", errorMessage));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Виникла внутрішня помилка сервера."));
+        }
     }
 }

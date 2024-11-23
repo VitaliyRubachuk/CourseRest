@@ -52,14 +52,11 @@ public class ReviewController {
     @PostMapping
     public ResponseEntity<Object> addReview(@Valid @RequestBody ReviewCreateDTO reviewCreateDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-
             List<String> errorMessages = bindingResult.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage)
                     .collect(Collectors.toList());
-
             return ResponseEntity.badRequest().body(errorMessages);
         }
-
         ReviewDto createdReview = reviewService.createReview(reviewCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReview);
     }
@@ -74,7 +71,6 @@ public class ReviewController {
         }
     }
 
-
     @GetMapping
     public ResponseEntity<List<ReviewDto>> getAllReviews() {
         List<ReviewDto> reviews = reviewService.getAllReviews();
@@ -85,7 +81,6 @@ public class ReviewController {
     public ResponseEntity<List<ReviewDto>> sortReviews(
             @RequestParam(required = false, defaultValue = "date") String sortBy,
             @RequestParam(required = false, defaultValue = "asc") String order) {
-
         List<ReviewDto> sortedReviews = reviewService.sortReviews(sortBy, order);
         return ResponseEntity.ok(sortedReviews);
     }

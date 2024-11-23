@@ -46,7 +46,6 @@ public class UserController {
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
         }
-
         try {
             UserDto createdUser = userService.createUser(userCreateDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
@@ -54,8 +53,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
-
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable long id, @Valid @RequestBody UserDto userDto) {
@@ -72,5 +69,4 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Користувача не знайдено.");
         }
     }
-
 }

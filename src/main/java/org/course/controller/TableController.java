@@ -70,7 +70,6 @@ public class TableController {
         }
     }
 
-
     @PostMapping("/{id}/reserve")
     public ResponseEntity<TableDto> reserveTable(@PathVariable long id) {
         TableDto reservedTable = tableService.reserveTable(id);
